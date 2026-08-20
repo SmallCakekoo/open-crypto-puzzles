@@ -1,0 +1,4 @@
+# Root-level convenience file for the local learning/analysis environment.
+# The pinned dependency list lives in tools/requirements.txt so there is one
+# place to update; this file just points pip at it.
+-r tools/requirements.txt

@@ -3983,7 +3983,7 @@
           "label": "main",
           "explorer": "https://mempool.space/address/bc1q94ecsn0qk8lap2gefrycnms3ruepy889z969a6",
           "expected": "100000 sats",
-          "verified_on": "2026-08-16",
+          "verified_on": "2026-08-19",
           "verified_state": "funded-unspent"
         }
       ],
@@ -4000,34 +4000,29 @@
         "certified_against": "the public BIP39/BIP84 test vectors (12-word and 24-word 'abandon' vectors), since no solved sibling exists for this puzzle"
       },
       "difficulty_left": "insight",
-      "difficulty_note": "the derivation is bounded and fast once the inputs are known (checking a 24-word candidate is a single oracle call; searching every way to drop 10 of 34 known words costs on the order of an hour with this stdlib-plus-bip_utils oracle); the actual gate is cultural, not computational: 32 of 34 films are identified with confidence, 1 (panel 11) is unidentified, 1 (panel 34) has two competing identifications from different research passes that were not reconciled, and neither the title-to-word rule nor the intruder-selecting IMDb field has been found",
+      "difficulty_note": "all 34 films are identified, though panels 8 and 11 carry open evidentiary tension rather than clean confirmation; panel 8 was briefly corrected 2026-08-19 to Shutter Island (independently sourced via Bing Visual Search) then reverted to The Goonies per user instruction, with Shutter Island kept as a live secondary probability -- Goonies has no literal BIP39 word (uses the guessed, unverified 'chunk'), Shutter Island has a literal one ('island'); panel 11 was corrected the same day from Godzilla to Ace Ventura: When Nature Calls on the user's own direct identification, but an independent check found no documented scene in that film matching the still's content (only an unrelated spoken catchphrase), while Godzilla's beach-shipwreck scene remains independently sourced -- both panels are carried forward as-instructed with the tension documented, not resolved; a full 4,752-candidate cross covering both panel 8 hypotheses plus the corrected panel 11 (all other open choices included) was run against the escrow 2026-08-19 with 0 matches, which does not kill any single hypothesis inside it since Sharknado and Raiders of the Lost Ark are still guessed in that same space",
       "tested_total": {
-        "candidates": 0,
-        "families": 5,
-        "certified": false
+        "candidates": 7344,
+        "families": 13,
+        "certified": true,
+        "note": "0 matches; Raiders' guess list expanded from 11 to 17 words 2026-08-19 (added soft/rail/raise/risk/other/rather, of which only 'soft' has any textual connection to the title); this is the most exhaustive Raiders word sweep run so far, and the first to cover both live panel 8 hypotheses plus the corrected panel 11 together"
       },
       "leads": [
         {
           "rank": 1,
-          "title": "identify panel 11",
-          "cost": "needs-a-person",
-          "status": "open"
-        },
-        {
-          "rank": 2,
-          "title": "reconcile panel 34's identity (Dead Ringers vs The Human Centipede)",
-          "cost": "needs-a-person",
-          "status": "open"
-        },
-        {
-          "rank": 3,
-          "title": "find the title-to-word rule for the 4 titles with no literal BIP39 word",
+          "title": "find real words for Sharknado and Raiders of the Lost Ark",
           "cost": "needs-new-information",
           "status": "open"
         },
         {
-          "rank": 4,
-          "title": "find the IMDb field that splits 24 keepers from 10 intruders",
+          "rank": 2,
+          "title": "settle panel 8 (Goonies vs Shutter Island) and panel 11 (Godzilla vs Ace Ventura) with decisive evidence",
+          "cost": "needs-new-information",
+          "status": "open"
+        },
+        {
+          "rank": 3,
+          "title": "if panel 8 is ever settled as Shutter Island, resolve the resulting Scorsese-pair complication in the director/lead-actor intruder criterion",
           "cost": "needs-new-information",
           "status": "open"
         }
@@ -4055,7 +4050,7 @@
         }
       ],
       "third_party_material": "the 34 movie panels are individual frames from third-party films, not original material by the author; I do not reproduce them here and link to the author's still-live site instead",
-      "last_updated": "2026-08-16",
+      "last_updated": "2026-08-20",
       "folder": "3-small-prizes/bitcoin-movie-enigma-100ksats"
     },
     {

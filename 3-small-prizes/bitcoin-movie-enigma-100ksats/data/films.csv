@@ -1,9 +1,13 @@
-# Film identification state for the 34 panels of the Bitcoin Movie Enigma, as of my
-# last full identification pass, 2026-08-04. confidence: confirmed | probable |
-# uncertain | unidentified | disputed. candidate_bip39_words: semicolon-separated
-# English BIP39 words found literally inside the title, or "none". Panel 34 is
-# "disputed": two identifications were reached in different research sessions and
-# were not reconciled before this folder was written; see analysis/leads.md.
+# Film identification state for the 34 panels of the Bitcoin Movie Enigma. Last full
+# pass 2026-08-04; panels 11 and 34 updated 2026-08-19 (see analysis/tested.md).
+# confidence: confirmed | probable | uncertain. candidate_bip39_words:
+# semicolon-separated English BIP39 words found literally inside the title, or
+# "none". All 34 panels now have an identification; panels 8, 25, 26 and 32 have no
+# literal-substring candidate (see analysis/leads.md, lead 3). Panel 20 ("First Man")
+# and panel 34 ("The Human Centipede (First Sequence)") share 2 of their 3 candidate
+# words ("first", "man"); if both panels are real (not intruders), a well-formed
+# 24-word set likely does not pick the same word for both, which favors "human" (the
+# one candidate unique to panel 34) without confirming it.
 # Sources: docs/ident_01_09.md, ident_10_18.md, ident_19_26.md, ident_27_34.md,
 # audit_identifications.md, ident_finales.md, ident_fable.md (private research notes).
 panel,title,mpaa,confidence,candidate_bip39_words
@@ -17,7 +21,7 @@ panel,title,mpaa,confidence,candidate_bip39_words
 8,The Goonies,PG,probable,none
 9,Duel in the Sun,APPROVED,confirmed,sun
 10,Mission: Impossible,PG-13,confirmed,miss;possible
-11,unidentified,,unidentified,
+11,Ace Ventura: When Nature Calls,PG-13,confirmed,when;nature;call
 12,Life of Pi,PG,confirmed,life
 13,Goodfellas,R,confirmed,good
 14,Eyes Wide Shut,R,confirmed,eye;wide
@@ -40,4 +44,4 @@ panel,title,mpaa,confidence,candidate_bip39_words
 31,Ghostbusters II,PG,confirmed,ghost
 32,Raiders of the Lost Ark,PG,confirmed,none
 33,The Shining,R,confirmed,shine
-34,disputed: Dead Ringers (probable) or The Human Centipede (First Sequence) (confirmed in a separate session),R,disputed,ring
+34,The Human Centipede (First Sequence),R,confirmed,human;first;man

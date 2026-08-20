@@ -7,11 +7,14 @@ published on the author's own site, describe a two-step transform: turn each of 
 34 movie titles into an English BIP39 word, then drop 10 "intruder" words using
 information found on each film's IMDb page, leaving the real 24-word seed in panel
 order. The derivation is fully understood and bounded once the inputs are known.
-What is missing is entirely cultural: I have identified 32 of the 34 films with
-confidence, 1 remains unidentified, and 1 has two different candidate
-identifications from separate research passes that I have not reconciled, and I
-have not yet found either the title-to-word rule or the IMDb field that splits the
-24 keepers from the 10 intruders.
+All 34 films are now identified with confidence. What is missing is the two-step
+transform itself: 2 titles still have no literal BIP39 word as a substring of the
+title (Sharknado, Raiders of the Lost Ark; a third, Barry Lyndon, is explained by
+the leading intruder hypothesis instead), and the IMDb field that splits the 24
+keepers from the 10 intruders is not yet settled -- the leading candidate (shares a
+director or lead actor with another panel here) was found 2026-08-19 but is itself
+in question after a panel re-identification the same day (see "What is understood"
+below).
 
 ## At a glance
 
@@ -22,12 +25,12 @@ have not yet found either the title-to-word rule or the IMDb field that splits t
 | Prize | 100,000 sats (about $63 at BTC = $63,000, 2026-08-16) |
 | Chain | bitcoin |
 | Escrow | `bc1q94ecsn0qk8lap2gefrycnms3ruepy889z969a6` ([explorer](https://mempool.space/address/bc1q94ecsn0qk8lap2gefrycnms3ruepy889z969a6)) |
-| Last on-chain check | 2026-08-16: funded and unspent (100,000 sats) |
+| Last on-chain check | 2026-08-19: funded and unspent (100,000 sats) |
 | Status | OPEN |
 | Puzzle type | bip39-seed, text-cipher, word-selection |
 | Target format | BIP39 24 words (English), most likely BIP84 `m/84'/0'/0'/0/i` (script type `v0_p2wpkh`), no passphrase stated |
 | Certified oracle | yes: `tools/oracle.py --selftest` (certified against the public BIP39/BIP84 test vectors) |
-| What remains | identifying 2 of the 34 films, then the title-to-word rule and the IMDb intruder field |
+| What remains | real words for 2 gap panels (Sharknado, Raiders of the Lost Ark); panel 11 corrected 2026-08-19 to Ace Ventura: When Nature Calls (evidentiary tension noted, not fully resolved); panel 8 briefly corrected to Shutter Island then reverted to The Goonies per user instruction, with Shutter Island kept as a live probability; a 7,344-candidate cross (every candidate word ever proposed for every open panel, including 6 more Raiders guesses added 2026-08-19) was run against the escrow with 0 matches |
 | Series | none |
 
 ## The puzzle as published
@@ -114,18 +117,32 @@ Reproduced 2026-08-16.
    entry with the same date, resolving the apparent gap between funding and launch.
 3. Both published image sets (individual panels and the "alternative release") are
    byte-for-byte identical, 34 of 34, confirmed by MD5.
-4. 32 of the 34 films are identified with confidence (24 confirmed, 7 probable, 1
-   uncertain); panel 11 is unidentified; panel 34 has 2 competing identifications
-   from different research passes that have not been reconciled
-   (`data/films.csv`).
-5. Of the 33 titles identified with any confidence, 29 contain at least one English
-   BIP39 word as a literal substring of the title; 4 do not (The Goonies, Barry
-   Lyndon, Sharknado, Raiders of the Lost Ark).
+4. All 34 films are identified, though 2 panels carry open evidentiary tension:
+   panel 34 (The Human Centipede (First Sequence), 2009) is settled with
+   independent sourcing, weakly reinforced by a reverse-image spot check
+   2026-08-19; panel 11 was corrected to Ace Ventura: When Nature Calls (1995) on
+   the user's own direct identification, but an independent check found no
+   documented scene in that film matching the still's actual content, so it is
+   recorded as a first-hand identification with an open tension against the prior
+   (independently-sourced) Godzilla identification, not a clean confirmation; panel
+   8 was briefly corrected to Shutter Island (2010, independently sourced via
+   reverse-image match) then reverted to The Goonies per user instruction, with
+   Shutter Island kept as a live secondary probability, not discarded
+   (`data/films.csv`, `analysis/tested.md`).
+5. Of the 34 titles, 31 contain at least one English BIP39 word as a literal
+   substring of the title; The Goonies (panel 8, primary hypothesis) and Barry
+   Lyndon have none literally in the title (Barry Lyndon is explained by the
+   leading intruder hypothesis instead); Sharknado and Raiders of the Lost Ark
+   remain the 2 genuine gap panels with no literal candidate under any hypothesis
+   tried. Ace Ventura: When Nature Calls (panel 11) has 3 literal candidates
+   ("when", "nature", "call"); Shutter Island, kept as panel 8's secondary
+   probability, has 1 ("island").
 6. About 25 to 30 candidate IMDb-field criteria for the 10 intruders have been
-   tried; none produces an exact 24-versus-10 split (`analysis/tested.md`).
+   tried; none produces an exact 24-versus-10 split against the fully-corrected
+   film list (`analysis/tested.md`).
 
-![34 panel slots colored by identification confidence: confirmed, probable or uncertain or disputed, and unidentified](images/02-panel-grid-identification.svg)
-*Figure 1. Identification status of the 34 panels, no film stills reproduced (source: data/films.csv, script tools/fig_panel_grid.py), 2026-08-16.*
+![34 panel slots colored by identification confidence: confirmed, or probable or uncertain](images/02-panel-grid-identification.svg)
+*Figure 1. Identification status of the 34 panels, no film stills reproduced (source: data/films.csv, script tools/fig_panel_grid.py), 2026-08-19.*
 
 ## What has been tested
 
@@ -138,25 +155,62 @@ Full ledger in [analysis/tested.md](analysis/tested.md). Summary:
 | Intruders = won at least 1 Oscar | recount as films are identified | direct count | looked correct at 10/21, refuted at 11/34 | n/a: direct count | 2026-08-04 |
 | Intruders = adapted from a novel | recount as films are identified | direct count | looked correct at 10/31, refuted at 12/34 | n/a: direct count | 2026-08-04 |
 | About 25 further IMDb-field criteria | recount as films are identified | direct count | none reaches an exact 24/10 split | n/a: direct count | 2026-08-04 |
+| Panel 11 identity (superseded, see next row) | 1 unidentified panel | viewed the live still, web search on visible brand/setting details | identified as Godzilla (1998), independently sourced (Panama beach wreckage scene with Bumble Bee tuna cans) at the time | yes: matched an independent plot-summary source, not just visual impression | 2026-08-19 |
+| Panel 34 identity | 2 disputed candidates | viewed the live still, checked each candidate's documented set design against what the still shows | confirmed: The Human Centipede (First Sequence), the conjoined-twins painting behind the couch matches documented set decoration specific to this film; ruled out Dead Ringers | yes: matches an independent source describing Dr. Heiter's house paintings | 2026-08-19 |
+| Intruders = shares a director or lead actor with another panel here | 34 films, director + lead actor each | compiled cast/director per panel, computed repeats (`analysis/intruder_repeat_check.py`) | exactly 10 of 34 flagged, matching the required split | yes: each repeated director/actor claim traces to an independent source | 2026-08-19 |
+| Full candidate set under that intruder split (16 fixed words, 5 ambiguous panels, 3 gap-panel guesses) | 792 candidates | `analysis/build_candidates.py --run` against `tools/oracle.py` | 0 matches; not a kill of the intruder criterion, since 3 of the 24 keeper words were unverified guesses | yes: oracle self-test passed immediately before the run, reproducible | 2026-08-19 |
+| Panel 8 identity | 1 "probable"-confidence panel, re-checked as a spot audit | downloaded the live still, ran it through Bing Visual Search | wrong: not The Goonies, it is Shutter Island (2010); Bing's own caption matches the still's coats/hats/umbrellas/waterfront exactly | yes: independent visual-match caption from a reverse-image engine, not a plausibility read | 2026-08-19 |
+| Same candidate set, "chunk" replaced by Shutter Island's verified "island" | 792 candidates | `analysis/build_candidates.py --run` | 0 matches; expected, since Sharknado and Raiders of the Lost Ark are still guesses in this space | yes: reproducible | 2026-08-19 |
+| Director/lead-actor intruder criterion, re-checked against the corrected panel 8 | 34 panels | `analysis/intruder_repeat_check.py` re-run with Shutter Island's real director/actor | flags 12 panels, not 10: Scorsese now connects panel 8 to panel 13 (Goodfellas), and nothing in the original criterion excludes a 2-film repeat (it already counted McTiernan/Cruise/Gosling at 2 films each); the criterion is now in question, not just unconfirmed | yes: reproducible, `analysis/intruder_repeat_check.py` | 2026-08-19 |
+| Panel 11 identity, corrected | previously "confirmed" | user's own direct identification of the live still; cross-checked both candidates against independent sources before accepting | corrected: not Godzilla, it is Ace Ventura: When Nature Calls (1995); Godzilla's tuna-can scene has independent written corroboration, Ace Ventura's does not (only the character's spoken catchphrase was found) -- accepted as a first-hand identification, flagged as such | partial: user's first-hand identification accepted per this repo's standing rule for this evidence class; no independent written source found for this specific scene | 2026-08-19 |
+| Recomputed literal BIP39 candidates, H1 status, and derived counts for the corrected panel 11 | 1 panel, cross-checked against all 33 others | direct wordlist check + `analysis/intruder_repeat_check.py` re-run + `analysis/build_candidates.py` (no `--run`) | 3 literal candidates found ("when", "nature", "call"), none guessed; H1's flagged set unchanged (still 12, Ace Ventura not among them, same as Godzilla); gap-panel count unchanged at 2; candidate space grows from 792 to 2,376; every previously-tested mnemonic used "ill" here and is invalidated | yes: reproducible | 2026-08-19 |
+| Panel 11 identity, independent re-check | 2 candidates in tension (Godzilla vs. Ace Ventura) | reverse-image search on the actual still + search for a matching scene in Ace Ventura: When Nature Calls | inconclusive/unsupportive: reverse-image search returned only a generic product match, no film; no documented scene with tuna cans in sand found in the film (its only "Bumblebee tuna" material is an unrelated spoken catchphrase); Godzilla's beach-shipwreck scene remains the only one with a documented match | partial: absence of evidence for Ace Ventura, not proof against it | 2026-08-19 |
+| Panel 34 identity, independent re-check | 1 settled identification, re-examined after external doubt | reverse-image search on the actual still | no specific-scene match, but "The Human Centipede" appears among related results and "Dead Ringers" does not appear at all; weakly consistent with, not a standalone confirmation of, the existing identification | weak but directionally consistent | 2026-08-19 |
+| Panel 8, reverted to The Goonies (Shutter Island kept as a probability) | 1 panel, user-directed reversion | `data/films.csv` and `analysis/intruder_repeat_check.py` reverted; re-ran the intruder check | Scorsese-pair complication disappears entirely; H1 flags exactly the original 10 again | yes: reproducible | 2026-08-19 |
+| Full cross of both panel 8 hypotheses (Goonies "chunk" / Shutter Island "island") and corrected panel 11, all other open choices | 4,752 candidates | `analysis/build_candidates.py --run` against `tools/oracle.py` | 0 matches; not a kill of any single hypothesis inside it, since Sharknado and Raiders of the Lost Ark are still guessed in this space | yes: oracle self-test passed before and after, reproducible | 2026-08-19 |
+| Raiders' guess list expanded (soft, rail, raise, risk, other, rather) and re-crossed | 7,344 candidates | verified each new word against the full wordlist first (only "soft" is a real, boundary-crossing substring; the other 5 have no textual connection at all), then `analysis/build_candidates.py --run` | 0 matches; now the most exhaustive Raiders word sweep run so far, every proposed candidate tested | yes: oracle self-test passed after, reproducible | 2026-08-19 |
 
 ## Open leads, ranked
 
-1. **Identify panel 11** (needs a person). The still shows "Bumble Bee" branded
-   boxes buried in sand; a Nutrition Facts label dates the scene to after about
-   1994. No film has been matched yet.
-2. **Reconcile panel 34's identity** (needs a person, likely under an hour). Two
-   research passes reached different conclusions, "Dead Ringers" (probable) and
-   "The Human Centipede (First Sequence)" (2009, reached at higher confidence in a
-   later, independent pass). I have not run both methods side by side to settle
-   this, so I present it here as open rather than picking one.
-3. **Find the title-to-word rule for the 4 titles with no literal BIP39 word**
-   (needs new information). The Goonies, Barry Lyndon, Sharknado, and Raiders of
-   the Lost Ark contain no BIP39 word as a literal substring; either the rule is
-   not purely literal, or these 4 are themselves intruders.
-4. **Find the IMDb field that splits 24 keepers from 10 intruders** (needs new
-   information). About 25 to 30 criteria tried, all refuted; I am not testing new
-   criteria until panels 11 and 34 are both settled, since a 10-of-34 split found
-   against an incomplete film set has low statistical value on its own.
+1. **Find real words for Sharknado and Raiders of the Lost Ark** (needs new
+   information or insight, not more guessing). These are the only 2 of 24 keeper
+   panels with no literal word under any hypothesis tried. Guessing further from
+   theme association already failed once for Raiders (11 untargeted tries,
+   `analysis/tested.md`) and once for Sharknado ("tornado"), so the next step is
+   someone who knows these films, or a specific detail on their IMDb pages, the way
+   panel 34 was actually resolved (`analysis/leads.md`).
+2. **The director/lead-actor intruder criterion currently checks out clean at
+   exactly 10, but only under the Goonies hypothesis for panel 8.**
+   `analysis/intruder_repeat_check.py` flags exactly 10 of 34 panels (via Stanley
+   Kubrick x5, John McTiernan x2, Tom Cruise x2, Ryan Gosling x2) with panel 8 as
+   The Goonies (Richard Donner / Sean Astin repeat nowhere else). If panel 8 is
+   ever settled as Shutter Island instead, this reopens the Martin Scorsese-pair
+   complication documented in `analysis/leads.md`, lead 2 (Scorsese also directs
+   panel 13, Goodfellas, pushing the flagged count to 12 under that hypothesis).
+3. **Panel 11 remains in evidentiary tension, not settled.** Panel 11 was corrected
+   2026-08-19 from Godzilla to Ace Ventura: When Nature Calls on the user's own
+   direct identification, but an independent check found no documented scene in
+   that film matching the still, while Godzilla's beach-shipwreck scene remains
+   independently sourced. Both are carried forward (Ace Ventura as primary, with
+   its 3 literal candidates "when"/"nature"/"call" tested); this tension is
+   unresolved.
+4. **Panel 8: Goonies is primary, Shutter Island is a live probability, not
+   discarded.** Reverted 2026-08-19 per user instruction. Both "chunk" (Goonies,
+   non-literal) and "island" (Shutter Island, literal) were carried into the
+   4,752-candidate cross below; neither is preferred yet.
+
+All 3 panel identification leads open as of 2026-08-16 or revisited later (panels
+8, 11, and 34) have been investigated as far as the evidence available in this
+session allows; see `analysis/tested.md` for method and `data/films.csv` for the
+current primary identification. A full cross of both live panel 8 hypotheses and
+the corrected panel 11 against every other open choice (4,752 candidates) was run
+against the escrow 2026-08-19: 0 matches. This does not kill any single hypothesis
+inside it -- Sharknado and Raiders of the Lost Ark are still guessed in this same
+space, and remain the most likely source of the negative result. One byproduct
+worth flagging: panel 20 ("First Man") and panel 34 ("The Human Centipede (First
+Sequence)") share 2 of their 3 literal candidate words ("first", "man"); if a
+well-formed 24-word answer avoids assigning the same word to two different panels,
+that favors "human" for panel 34 without confirming it.
 
 ## Files in this folder
 
@@ -165,7 +219,9 @@ Full ledger in [analysis/tested.md](analysis/tested.md). Summary:
 | `clues/author-posts.md` | verbatim quotes from the rules, about and wallet pages, with links; no film stills reproduced |
 | `data/films.csv` | my identification state for all 34 panels: title, MPAA rating, confidence, candidate BIP39 words |
 | `analysis/tested.md` | the complete negatives ledger |
-| `analysis/leads.md` | full notes behind the 4 ranked leads |
+| `analysis/leads.md` | full notes behind the ranked leads |
+| `analysis/intruder_repeat_check.py` | computes the director/lead-actor repeat split behind the 2026-08-19 intruder-field finding |
+| `analysis/mechanism_reconstruction.md` | confirmed facts vs. strong/weak hypotheses vs. unknowns, and exactly what is still needed to solve this puzzle |
 | `images/02-panel-grid-identification.svg` | the 34-panel identification status grid |
 | `tools/oracle.py` | candidate checker, certified against the public BIP39/BIP84 test vectors |
 | `tools/fig_panel_grid.py` | generates images/02-panel-grid-identification.svg from data/films.csv |
