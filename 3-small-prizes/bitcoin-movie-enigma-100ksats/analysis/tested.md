@@ -254,6 +254,66 @@ traces to a named, quoted source (Cassie Scerbo, Hollywood Reporter); the "no
 literal substring" claims are direct, reproducible checks against the full BIP39
 wordlist. Date: 2026-08-19.
 
+## Local brute-force sweep, phases 1 + 2A + 3 (one-in/one-out), 2026-08-20
+
+Method: the user ran a local, resumable, multiprocess solver
+(`analysis/bruteforce_solver.py`, `analysis/bruteforce_phase3_oneinoneout.py`,
+`analysis/bruteforce_phase3_runall.py`) on their own machine, built and validated
+in this session (self-test against `tools/oracle.py`, consistency check against
+`oracle.check()`, dry runs, before any real sweep). Frozen inputs for this run,
+none guessed beyond what was already backed by evidence: panel 16 = The 13th
+Warrior (not changed to Les Visiteurs, per the unresolved visual comparison), H1
+intruders = {1, 2, 10, 14, 16, 17, 20, 22, 25, 33}, the 24 keepers' candidate words
+exactly as established earlier in this file and in `analysis/leads.md`, and
+Raiders of the Lost Ark swept across the full, real 2048-word English BIP39 list
+(no invented word) since it still has zero backed candidates.
+
+Three phases run to completion, all on the same target address and the same
+`tools/oracle.py` derivation paths (BIP84/49/44, 2 accounts x 3 indices, plus 3
+raw paths), no shortcuts:
+
+- **Phase 1**: 589,824 candidates (6 ambiguous keeper panels x Goonies'
+  one/brand/chunk x Sharknado fixed at "april" x full Raiders sweep). 2,302
+  checksum-valid. **0 matches.**
+- **Phase 2A**: 1,179,648 candidates (same as phase 1, Sharknado also allows
+  "tornado"). 4,589 checksum-valid. **0 matches.**
+- **Phase 2B**: not run. Blocked by design: it would require Raiders to supply a
+  fixed candidate list while Goonies took the 2048-word sweep, but Raiders still
+  has none -- constructing this phase would mean inventing a word, which the user
+  explicitly prohibited. Recorded as blocked, not silently skipped.
+- **Phase 3 (one-in/one-out)**: every one of the 10 current H1 intruders swapped
+  back in as a keeper, paired with every one of the 24 current keepers swapped out
+  as the new intruder -- 240 possible pairs, 216 of them runnable (24 excluded
+  because the incoming panel, The Shining, has no backed candidate word under the
+  same whole-word/singular/substring hierarchy validated on the other 24 keepers:
+  "shine" is not a literal substring of "shining"). All 216 runnable pairs run to
+  completion: **203,494,464 candidates, 794,073 checksum-valid, 0 matches.**
+  Cheapest pair: 288 candidates; most expensive: 2,949,120; total wall time
+  1h45m17s at ~32,000 candidates/second (8 worker processes).
+
+**Grand total across all three phases: 205,263,936 real candidates checked against
+the live oracle, 0 matches.** `tools/oracle.py --selftest` passed before this work
+began and the solver's own `check_candidate()` was verified to agree with
+`oracle.check()` exactly (same function calls, not a reimplementation) before any
+real sweep.
+
+What this does and does not establish: this exhausts every word-cross combination
+of the *currently backed* candidates under H1 exactly as stated, AND every single
+one-panel swap of H1's own membership using only backed candidate words (not
+guessed ones) for whichever panel gets swapped in. It does not test: two or more
+simultaneous swaps to H1's membership; any word for Goonies, Sharknado, or Raiders
+beyond what's listed above (Raiders' sweep was the full wordlist, so that panel
+specifically is now exhausted for phase-1's other fixed assumptions, but not
+combined with a different H1); a different order for the 24 words; a passphrase;
+or a wrong identification among the 24 currently-"confirmed" keeper panels
+(everything here assumed those 15 single-candidate answers and panel 34's
+human/first pair are correct). Given the scale of this negative result, the most
+likely remaining explanations are: (a) one of the 15 "settled" keeper words is
+itself wrong, (b) the intruder criterion is not director/lead-actor repetition at
+all (even with a single swap), or (c) a real, sourced word for Goonies, Sharknado,
+or Raiders still doesn't exist among the options tried and needs actual new
+evidence, not more search. Date: 2026-08-20.
+
 ## Panel 8 re-identification: The Goonies was wrong, real film is Shutter Island, 2026-08-19
 
 Method: downloaded the actual still served at `bitcoinmovieenigma.com/blog/08`

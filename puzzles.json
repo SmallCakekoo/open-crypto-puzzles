@@ -4000,29 +4000,29 @@
         "certified_against": "the public BIP39/BIP84 test vectors (12-word and 24-word 'abandon' vectors), since no solved sibling exists for this puzzle"
       },
       "difficulty_left": "insight",
-      "difficulty_note": "all 34 films are identified, though panels 8 and 11 carry open evidentiary tension rather than clean confirmation; panel 8 was briefly corrected 2026-08-19 to Shutter Island (independently sourced via Bing Visual Search) then reverted to The Goonies per user instruction, with Shutter Island kept as a live secondary probability -- Goonies has no literal BIP39 word (uses the guessed, unverified 'chunk'), Shutter Island has a literal one ('island'); panel 11 was corrected the same day from Godzilla to Ace Ventura: When Nature Calls on the user's own direct identification, but an independent check found no documented scene in that film matching the still's content (only an unrelated spoken catchphrase), while Godzilla's beach-shipwreck scene remains independently sourced -- both panels are carried forward as-instructed with the tension documented, not resolved; a full 4,752-candidate cross covering both panel 8 hypotheses plus the corrected panel 11 (all other open choices included) was run against the escrow 2026-08-19 with 0 matches, which does not kill any single hypothesis inside it since Sharknado and Raiders of the Lost Ark are still guessed in that same space",
+      "difficulty_note": "a local brute-force run 2026-08-20 (analysis/bruteforce_solver.py + bruteforce_phase3_runall.py, run on the user's own machine, solver validated against tools/oracle.py's own check() function before and after) checked 205,263,936 real candidates against the live escrow with 0 matches: phase 1 (589,824: full word-cross under H1 with panel 8 = Goonies, panel 11 = Ace Ventura, Raiders swept across all 2048 real BIP39 words, no invented word), phase 2A (1,179,648: same plus Sharknado='tornado' as an alternative), and phase 3 (203,494,464 across 216 of 240 possible one-in/one-out swaps of H1's own 10-intruder membership, using only already-backed candidate words for the swapped-in panel; the other 24 pairs are blocked because The Shining has no backed word under the validated whole-word/singular/substring hierarchy -- 'shine' is not a literal substring of 'shining'). This is materially stronger negative evidence than before: it is no longer just the 3 gap/disputed panels left unexplained -- either one of the 15 'settled' single-candidate keeper words is itself wrong, or the director/lead-actor intruder criterion needs more than a single-panel swap to be correct. Separately still unresolved: panel 8 (Goonies primary, Shutter Island kept as a live probability, independently sourced via Bing Visual Search) and panel 11 (Ace Ventura primary per the user's own identification, evidentiary tension against Godzilla's independently-sourced beach-shipwreck scene never resolved).",
       "tested_total": {
-        "candidates": 7344,
-        "families": 13,
+        "candidates": 205263936,
+        "families": 15,
         "certified": true,
-        "note": "0 matches; Raiders' guess list expanded from 11 to 17 words 2026-08-19 (added soft/rail/raise/risk/other/rather, of which only 'soft' has any textual connection to the title); this is the most exhaustive Raiders word sweep run so far, and the first to cover both live panel 8 hypotheses plus the corrected panel 11 together"
+        "note": "0 matches across phase 1 (589,824), phase 2A (1,179,648), and the full phase-3 one-in/one-out sweep (203,494,464 across 216/240 pairs; 24 blocked, no backed word for The Shining). 794,073 + 6,891 checksum-valid candidates recorded individually (candidate_index, mnemonic, checksum_valid=true, panel word breakdown), not just counted. Wall time: phases 1+2A under a minute, phase 3 1h45m17s at ~32,000 candidates/sec, 8 worker processes."
       },
       "leads": [
         {
           "rank": 1,
-          "title": "find real words for Sharknado and Raiders of the Lost Ark",
+          "title": "reconsider whether director/lead-actor repetition is the right intruder criterion at all, not just a single-panel swap of it -- 205M candidates under that assumption found nothing",
           "cost": "needs-new-information",
           "status": "open"
         },
         {
           "rank": 2,
-          "title": "settle panel 8 (Goonies vs Shutter Island) and panel 11 (Godzilla vs Ace Ventura) with decisive evidence",
+          "title": "find real words for Sharknado and Raiders of the Lost Ark",
           "cost": "needs-new-information",
           "status": "open"
         },
         {
           "rank": 3,
-          "title": "if panel 8 is ever settled as Shutter Island, resolve the resulting Scorsese-pair complication in the director/lead-actor intruder criterion",
+          "title": "settle panel 8 (Goonies vs Shutter Island) and panel 11 (Godzilla vs Ace Ventura) with decisive evidence",
           "cost": "needs-new-information",
           "status": "open"
         }

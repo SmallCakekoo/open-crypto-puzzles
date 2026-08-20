@@ -30,7 +30,7 @@ below).
 | Puzzle type | bip39-seed, text-cipher, word-selection |
 | Target format | BIP39 24 words (English), most likely BIP84 `m/84'/0'/0'/0/i` (script type `v0_p2wpkh`), no passphrase stated |
 | Certified oracle | yes: `tools/oracle.py --selftest` (certified against the public BIP39/BIP84 test vectors) |
-| What remains | real words for 2 gap panels (Sharknado, Raiders of the Lost Ark); panel 11 corrected 2026-08-19 to Ace Ventura: When Nature Calls (evidentiary tension noted, not fully resolved); panel 8 briefly corrected to Shutter Island then reverted to The Goonies per user instruction, with Shutter Island kept as a live probability; a 7,344-candidate cross (every candidate word ever proposed for every open panel, including 6 more Raiders guesses added 2026-08-19) was run against the escrow with 0 matches |
+| What remains | real words for 2 gap panels (Sharknado, Raiders of the Lost Ark); panel 11 corrected 2026-08-19 to Ace Ventura: When Nature Calls (evidentiary tension noted, not fully resolved); panel 8 briefly corrected to Shutter Island then reverted to The Goonies per user instruction, with Shutter Island kept as a live probability; a local brute-force run 2026-08-20 checked 205,263,936 candidates (every word-cross under H1 exactly as stated, plus every single-panel swap of H1's own membership) against the live escrow, all 0 matches |
 | Series | none |
 
 ## The puzzle as published
@@ -161,6 +161,8 @@ Full ledger in [analysis/tested.md](analysis/tested.md). Summary:
 | Full candidate set under that intruder split (16 fixed words, 5 ambiguous panels, 3 gap-panel guesses) | 792 candidates | `analysis/build_candidates.py --run` against `tools/oracle.py` | 0 matches; not a kill of the intruder criterion, since 3 of the 24 keeper words were unverified guesses | yes: oracle self-test passed immediately before the run, reproducible | 2026-08-19 |
 | Panel 8 identity | 1 "probable"-confidence panel, re-checked as a spot audit | downloaded the live still, ran it through Bing Visual Search | wrong: not The Goonies, it is Shutter Island (2010); Bing's own caption matches the still's coats/hats/umbrellas/waterfront exactly | yes: independent visual-match caption from a reverse-image engine, not a plausibility read | 2026-08-19 |
 | Same candidate set, "chunk" replaced by Shutter Island's verified "island" | 792 candidates | `analysis/build_candidates.py --run` | 0 matches; expected, since Sharknado and Raiders of the Lost Ark are still guesses in this space | yes: reproducible | 2026-08-19 |
+| Local brute-force: phase 1 + phase 2A (full H1 word-cross, Raiders swept over all 2048 BIP39 words) | 1,769,472 candidates | `analysis/bruteforce_solver.py`, user's own machine, multiprocess | 0 matches; 6,891 checksum-valid total | yes: solver validated against `oracle.check()` before the run, oracle self-test passed before and after | 2026-08-20 |
+| Local brute-force: phase 3, every one-in/one-out swap of H1's 10 intruders (216 of 240 pairs runnable; 24 blocked, The Shining has no backed word) | 203,494,464 candidates | `analysis/bruteforce_phase3_runall.py` | 0 matches; 794,073 checksum-valid total; 1h45m17s wall time | yes: same validated solver/oracle pipeline, reproducible | 2026-08-20 |
 | Director/lead-actor intruder criterion, re-checked against the corrected panel 8 | 34 panels | `analysis/intruder_repeat_check.py` re-run with Shutter Island's real director/actor | flags 12 panels, not 10: Scorsese now connects panel 8 to panel 13 (Goodfellas), and nothing in the original criterion excludes a 2-film repeat (it already counted McTiernan/Cruise/Gosling at 2 films each); the criterion is now in question, not just unconfirmed | yes: reproducible, `analysis/intruder_repeat_check.py` | 2026-08-19 |
 | Panel 11 identity, corrected | previously "confirmed" | user's own direct identification of the live still; cross-checked both candidates against independent sources before accepting | corrected: not Godzilla, it is Ace Ventura: When Nature Calls (1995); Godzilla's tuna-can scene has independent written corroboration, Ace Ventura's does not (only the character's spoken catchphrase was found) -- accepted as a first-hand identification, flagged as such | partial: user's first-hand identification accepted per this repo's standing rule for this evidence class; no independent written source found for this specific scene | 2026-08-19 |
 | Recomputed literal BIP39 candidates, H1 status, and derived counts for the corrected panel 11 | 1 panel, cross-checked against all 33 others | direct wordlist check + `analysis/intruder_repeat_check.py` re-run + `analysis/build_candidates.py` (no `--run`) | 3 literal candidates found ("when", "nature", "call"), none guessed; H1's flagged set unchanged (still 12, Ace Ventura not among them, same as Godzilla); gap-panel count unchanged at 2; candidate space grows from 792 to 2,376; every previously-tested mnemonic used "ill" here and is invalidated | yes: reproducible | 2026-08-19 |
@@ -172,14 +174,29 @@ Full ledger in [analysis/tested.md](analysis/tested.md). Summary:
 
 ## Open leads, ranked
 
-1. **Find real words for Sharknado and Raiders of the Lost Ark** (needs new
+**Update, 2026-08-20: a local brute-force run exhausted 205,263,936 real
+candidates (every word-cross under H1 as stated, plus every single-panel swap of
+H1's own 10-intruder membership) with 0 matches.** Full detail in
+`analysis/tested.md`, "Local brute-force sweep, phases 1 + 2A + 3." This makes
+"guess another word for the same 3 gap panels under the same H1" a much weaker
+next move than it was before; the leads below are reordered accordingly.
+
+1. **One of the 15 "settled" keeper words, or the H1 criterion itself, may be
+   wrong -- not just the 3 gap panels.** 205 million candidates covering every
+   backed option for the ambiguous/gap panels AND every single-panel swap of H1's
+   membership found nothing. This does not prove any specific keeper word wrong,
+   but it is now stronger evidence against "H1 plus a still-undiscovered word for
+   Goonies/Sharknado/Raiders" than for it. Revisiting whether director/lead-actor
+   repetition is the right intruder criterion at all (not just tweaking its
+   membership by one panel) is now at least as promising as finding a new word.
+2. **Find real words for Sharknado and Raiders of the Lost Ark** (needs new
    information or insight, not more guessing). These are the only 2 of 24 keeper
    panels with no literal word under any hypothesis tried. Guessing further from
    theme association already failed once for Raiders (11 untargeted tries,
    `analysis/tested.md`) and once for Sharknado ("tornado"), so the next step is
    someone who knows these films, or a specific detail on their IMDb pages, the way
    panel 34 was actually resolved (`analysis/leads.md`).
-2. **The director/lead-actor intruder criterion currently checks out clean at
+3. **The director/lead-actor intruder criterion currently checks out clean at
    exactly 10, but only under the Goonies hypothesis for panel 8.**
    `analysis/intruder_repeat_check.py` flags exactly 10 of 34 panels (via Stanley
    Kubrick x5, John McTiernan x2, Tom Cruise x2, Ryan Gosling x2) with panel 8 as
@@ -187,14 +204,14 @@ Full ledger in [analysis/tested.md](analysis/tested.md). Summary:
    ever settled as Shutter Island instead, this reopens the Martin Scorsese-pair
    complication documented in `analysis/leads.md`, lead 2 (Scorsese also directs
    panel 13, Goodfellas, pushing the flagged count to 12 under that hypothesis).
-3. **Panel 11 remains in evidentiary tension, not settled.** Panel 11 was corrected
+4. **Panel 11 remains in evidentiary tension, not settled.** Panel 11 was corrected
    2026-08-19 from Godzilla to Ace Ventura: When Nature Calls on the user's own
    direct identification, but an independent check found no documented scene in
    that film matching the still, while Godzilla's beach-shipwreck scene remains
    independently sourced. Both are carried forward (Ace Ventura as primary, with
    its 3 literal candidates "when"/"nature"/"call" tested); this tension is
    unresolved.
-4. **Panel 8: Goonies is primary, Shutter Island is a live probability, not
+5. **Panel 8: Goonies is primary, Shutter Island is a live probability, not
    discarded.** Reverted 2026-08-19 per user instruction. Both "chunk" (Goonies,
    non-literal) and "island" (Shutter Island, literal) were carried into the
    4,752-candidate cross below; neither is preferred yet.
@@ -225,6 +242,10 @@ that favors "human" for panel 34 without confirming it.
 | `images/02-panel-grid-identification.svg` | the 34-panel identification status grid |
 | `tools/oracle.py` | candidate checker, certified against the public BIP39/BIP84 test vectors |
 | `tools/fig_panel_grid.py` | generates images/02-panel-grid-identification.svg from data/films.csv |
+| `analysis/bruteforce_config.json` | frozen H1/word-candidate state used for the 2026-08-20 local brute-force run |
+| `analysis/bruteforce_solver.py` | resumable multiprocess solver (phases 1 and 2A), imports tools/oracle.py directly |
+| `analysis/bruteforce_phase3_oneinoneout.py` | one-in/one-out H1 modification engine plus cost report (phase 3) |
+| `analysis/bruteforce_phase3_runall.py` | runs all phase-3 pairs back to back; this is what found 0/203,494,464 |
 
 ## Sources
 
