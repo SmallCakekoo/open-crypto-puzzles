@@ -254,7 +254,79 @@ traces to a named, quoted source (Cassie Scerbo, Hollywood Reporter); the "no
 literal substring" claims are direct, reproducible checks against the full BIP39
 wordlist. Date: 2026-08-19.
 
+## Major dataset revision: 10 of 34 panels corrected from the user's own frame-by-frame research, 2026-08-20
+
+Method: the user independently re-watched the actual films (including via
+non-official streams) scene by scene, cross-checked identifications with other
+people, and produced a revised 34-panel list. This is first-hand identification
+work by the user, not something verified independently by me in this session
+beyond panel 16 (which already had circumstantial support from an earlier
+reverse-image/plot check, see above).
+
+Panels changed from the prior dataset:
+
+| # | Before | After |
+|---|---|---|
+| 3 | Alien (1979) | Aliens (1986) |
+| 5 | Star Trek: The Motion Picture | Alien (1979) |
+| 9 | Duel in the Sun | Spartacus (1960) |
+| 11 | Ace Ventura: When Nature Calls | Godzilla (1998) (reverts to the original 2026-08-19 identification) |
+| 13 | Goodfellas | Leon: The Professional |
+| 14 | Eyes Wide Shut | The Man in the Iron Mask (1998) |
+| 16 | The 13th Warrior | The Visitors (Les Visiteurs) -- confirms the disputed alternative from earlier in this file |
+| 23 | Valerian and the City of a Thousand Planets | Guardians of the Galaxy |
+| 24 | Ordinary People | Close Encounters of the Third Kind |
+| 27 | The Lost Boys | Terminator 2: Judgment Day |
+
+`data/films.csv` updated: these 10 panels recorded as "probable" (first-hand user
+identification, not yet independently re-sourced by me for 9 of the 10). Also
+corrected in the same pass, independent of this revision but discovered earlier in
+this investigation and applied now: panel 25 (Barry Lyndon) "bar" is a real
+substring, previously wrongly recorded as none; panel 31 (Ghostbusters II) gets 2
+more valid substrings (host, bus) alongside the already-recorded "ghost"; panel 33
+(The Shining) "shine" is corrected to none (verified not a literal substring of
+"shining").
+
+**Consequence for H1 (director/lead-actor repetition):** re-ran
+`analysis/intruder_repeat_check.py` against the corrected list. Result: **14 of 34
+panels flagged, not 10**: Stanley Kubrick x5 (Paths of Glory, Spartacus, A
+Clockwork Orange, Barry Lyndon, The Shining), James Cameron x2 (Aliens, Terminator
+2), Steven Spielberg x2 (Close Encounters, Raiders of the Lost Ark), Kirk Douglas
+x2 (Paths of Glory, Spartacus, already counted under Kubrick), Sigourney Weaver x2
+(Aliens, Alien), Jean Reno x2 (Leon: The Professional, The Crimson Rivers), Ryan
+Gosling x2 (First Man, Blade Runner 2049). Union: {2, 3, 5, 9, 13, 15, 17, 20, 22,
+24, 25, 27, 32, 33}, 14 panels. **H1 as previously stated no longer produces the
+required 24-versus-10 split against the corrected dataset.** Checked whether a
+simple sub-filter recovers exactly 10: "director-only" (drop the 3 actor-only
+pairs) gives 9; "actor-only" (drop the 3 director clusters) gives 8; neither hits
+10 either. No non-arbitrary refinement found yet.
+
+**Consequence for the title-to-word literal check:** re-ran the same word-lookup
+methodology (whole word > singular/plural > single-word substring) against the 9
+changed titles. Aliens -> "alien" (singular/plural); Alien -> "alien" (whole word) 
+-- these two would compete for the identical word if both were kept, which is
+itself consistent with both being flagged by H1 above. Spartacus and Leon: The
+Professional have zero literal candidates under any tier -- also both flagged by
+H1, so neither needs a word if H1 (in whatever form) holds. The Man in the Iron
+Mask has 3 whole-word candidates (man/iron/mask), a keeper under H1, unresolved.
+Guardians of the Galaxy has one clean literal candidate, "galaxy" (whole word, no
+competing candidate at any tier) -- a keeper under H1, and no longer ambiguous
+unlike its predecessor Valerian. Close Encounters of the Third Kind has a 2-way
+tie (close/kind) but is itself flagged by H1, so doesn't need resolving. Terminator
+2: Judgment Day has one clean candidate, "day", but is also flagged by H1.
+
+Status: dataset revision accepted and persisted; H1's specific 10-panel claim is
+now falsified against this dataset (14, not 10); the search for the real intruder
+criterion is reopened from scratch against the corrected 34-panel list, not
+patched onto H1's specific membership. Date: 2026-08-20.
+
 ## Local brute-force sweep, phases 1 + 2A + 3 (one-in/one-out), 2026-08-20
+
+**Superseded by the dataset revision above.** All 205,263,936 candidates checked in
+this sweep used the pre-revision 34-panel list (panels 3, 5, 9, 11 [as Ace
+Ventura], 13, 14, 16 [as 13th Warrior], 23, 24, 27 all since corrected). Kept below
+for the historical record of what was actually run and when, not as a currently
+applicable result to the corrected dataset.
 
 Method: the user ran a local, resumable, multiprocess solver
 (`analysis/bruteforce_solver.py`, `analysis/bruteforce_phase3_oneinoneout.py`,
@@ -583,3 +655,691 @@ remain the most likely source of the negative result -- though this run has now
 tested every candidate word for Raiders that has been proposed by any source in
 this investigation, real or speculative, with none producing a match. Date:
 2026-08-19.
+
+## IMDb field audit spreadsheet filled for all 34 panels, 2026-08-20
+
+Method: per `analysis/HANDOFF_2026-08-20.md`, the systematic single-field IMDb
+audit (started by the user to find a replacement intruder criterion after H1 was
+falsified against the revised dataset -- see "Major dataset revision" above) needed
+its yellow cells filled from real IMDb pages. I did this directly: resolved each of
+the 34 films' current IMDb tt-IDs via web search, then pulled each film's IMDb
+`/reference/` (genres, full credited stars, MPAA-equivalent rating), main title
+page (Details/Box office/Tech-specs block: countries, languages, exact release
+date, runtime, AKA titles, filming locations, production companies, budget, gross,
+top cast, writers, awards), `/technical/` (sound mix, aspect ratio, color, when not
+already on the main page), and `/keywords/` (top 5-6 Plot Details keywords, page
+order) pages, using an interactive browser (not WebFetch -- IMDb returns HTTP 403
+to it) with an `en_US`/`international-seo=us` cookie forced, since the default
+session geo-localized to Mexico (Spanish UI, MX-specific release dates/ratings).
+Cross-checked film identity via director/lead-actor already in the template plus
+year, since several titles are ambiguous without it (Alien vs Aliens, Godzilla 1998
+vs 2014, Solaris 1972 vs 2002, Spartacus 1960 film vs miniseries).
+
+All 20 previously-empty columns (H through AB: extra cast, countries, languages,
+exact release date, runtime, genres, color, aspect ratio, sound mix, budget, gross,
+production companies, distributor, awards, AKA, filming locations, keywords,
+sequel/franchise status, writers, notes) are now filled for all 34 rows, verified
+programmatically (no empty cells H:AB across rows 4-37). This is raw data
+collection, not analysis -- **no intruder criterion has been tested against it
+yet**; that is the next step per the handoff, and per house rules no criterion
+should be accepted without being defined first, giving exactly 10, and needing no
+manual exceptions.
+
+Notable things surfaced while pulling the data, flagged for whoever does the field
+analysis next:
+- **Panel 9 (Spartacus) certificate discrepancy**: `data/films.csv` and the
+  spreadsheet's pre-filled green cell record "APPROVED", but IMDb's main page
+  currently shows the certificate as **PG-13**. Not yet reconciled -- IMDb
+  certificates can be re-rated/re-classified over time; needs a decision on which
+  value to treat as authoritative before this field is used in any criterion test.
+- **Panel 21 (Solaris)**: the template's pre-filled director cell already flagged
+  "CONFIRM WHICH" (1972 Tarkovsky vs 2002 Soderbergh remake, same English word
+  candidate "solar" either way). Filled this row as the **1972 Tarkovsky version**
+  (tt0069293), matching the template's existing Year=1972 cell, and noted in the row
+  that the 2002 remake is a separate IMDb title (tt0307479) in case the panel image
+  is later confirmed to actually be the Clooney version instead.
+- Several films' US theatrical release date on IMDb is a delayed US release, not
+  the film's original home-country premiere (Mad Max: Australia 1979 vs IMDb's
+  listed US 1980; The Crimson Rivers: France 2000 vs US 2001; The Visitors: France
+  1993 vs US 1996, 3 years later after a rejected Mel Brooks English dub). Relevant
+  if "exact release date" ends up being tested as a criterion field, since "the"
+  release date is ambiguous for co-productions/imports.
+- Sharknado (panel 26) is a **TV Movie**, not a theatrical release -- it has no
+  MPAA rating (IMDb: "Not Rated"; films.csv records the actual US TV content rating
+  "TV-14", a different rating system) and no theatrical box-office figures.
+- Several older films' IMDb "Genres" pills (from `/reference/`) differ substantially
+  from the newer "Related interests" tag cloud shown on the main page (e.g. Die
+  Hard: reference-page genres "Action, Thriller" vs main-page interests "Dark
+  Comedy, Disaster, One-Person Army Action, Action, Holiday, Thriller"). Recorded
+  the reference-page 2-3-word genre list as the "Generos" column and the interest
+  tags in "Notas", since it's unclear which one the puzzle means by "genres" --
+  worth testing both if a genre-based criterion is attempted.
+- Distributor was not always explicitly listed as a separate field from production
+  companies on the main page; several rows note "no confirmado" and give a
+  best-guess historical distributor instead of asserting one from memory.
+
+Not done in this pass, left for the user or a follow-up session: actually testing
+each single field against the 34-panel list for one that flags exactly 10 with no
+exceptions (the stated next step in the handoff).
+
+## Systematic single-field sweep against the newly-filled audit data, 2026-08-20
+
+Method: loaded all 34 filled rows from `analysis/imdb_field_audit.xlsx` and tested
+every natural binary/grouping split of every filled column against the "exactly 10,
+no manual exceptions" bar, same discipline as the H1 search. Tested: country count
+(single vs co-production: 20 vs 14), country = "United States" only (15 vs 19),
+each individual country's film count (UK appears in 9, France in 4, etc.), language
+count (single vs multi: 16 vs 18), certificate groups (R=14, PG=8, PG-13=8,
+Approved=2, other=2), color (B&W-involved=3), runtime (no round-number threshold
+lands on 10 in either direction), budget (no round threshold lands on 10), genre
+count per film (2 genres=9, 3 genres=22, other=3), each individual genre word's
+frequency (max Adventure=15, Action=14, Drama=14, ... none=10), first-listed genre
+(Action=14, Adventure=6, Drama=5, ...), distributor grouped by studio (Warner
+Bros.=6, Fox=4, Paramount=3, ...), production company count per film (1=4, 2=11,
+3=19), writer-credit-block count (1=9, 2=17, 3=5, 4=2, 5=1), "based on a
+novel/book" per writer field (16 adaptations vs 18 original screenplays, though
+this one has false positives from "based on characters/comic" phrasing and needs
+re-checking by hand before trusting the count), won-an-Oscar specifically (13),
+nominated-for-an-Oscar (18), sequel/reboot/franchise-entry status as recorded in
+the template (9: Aliens, Godzilla, Blade Runner 2049, Guardians of the Galaxy,
+Terminator 2, Scream 2, The Matrix Reloaded, Ghostbusters II, The Human Centipede
+-- note Guardians' "yes" here is a judgment call, since it's an original
+screenplay that's merely part of a shared universe, not a literal sequel; dropping
+it would make this 8), aspect-ratio family (2.39:1=18, 1.85:1=5, 2.35:1=4, ...),
+distributor-unconfirmed-by-me count (5).
+
+Result: **no single field, defined and read naturally, produces exactly 10** across
+everything tested so far. Closest near-misses, none exact: sequel/franchise status
+(9, and ambiguous for at least one panel), single-writer-credit (9), 2-genre films
+(9), UK country involvement (9), won-an-Oscar (13).
+
+Known gaps in the sweep, not yet closed:
+- Star Wars: A New Hope's `/keywords/` page was never fetched (only its
+  `/reference/` and main-page "Related interests" were used for genre/notes), so
+  its IMDb Franchise-keyword-category status and full Plot Details keyword list are
+  unverified relative to the other 33 panels.
+- Only the top 5-6 keywords per film were recorded, not the full keyword list or
+  each film's Subgenres/Franchise IMDb keyword categories as a whole -- a
+  keyword-category-based criterion (e.g. "IMDb tags this with a Franchise
+  keyword") could not be fully tested from the recorded data; from what was
+  observed in passing while collecting keywords, Aliens, Alien, Mission:
+  Impossible, Godzilla, Raiders, Terminator 2, Scream 2, The Matrix Reloaded, Toy
+  Story, Guardians of the Galaxy, and Blade Runner 2049 all showed a "Franchise
+  (1)" category on their keyword pages (11 films, Star Wars unchecked) -- close to
+  10 but unconfirmed and likely 11 or 12, not exact.
+- Numeric fields (budget, gross, runtime) were only checked for round-number
+  thresholds; an exhaustive "does *some* cutpoint produce exactly 10" scan (any of
+  the 34 sorted values as a boundary) was not run, since without a principled
+  reason to pick one specific cutpoint over the adjacent ones this reduces to
+  overfitting -- flagging as future work only if a natural boundary is proposed
+  first (e.g. "$50M+", "over 2.5 hours"), not by search.
+
+This clears the fields and splits actually tested; it does not prove no
+single-field criterion exists (untested: exact keyword-category counts per film,
+combinations of two weak fields, and any field not present in the template at
+all). Date: 2026-08-20.
+
+## Gaps closed: Star Wars keywords + IMDb "Franchise" keyword-category count, 2026-08-20
+
+Context: the user restructured `imdb_field_audit.xlsx` themselves after the initial
+fill -- removed the legend row and the "EJEMPLO" Die Hard row (35 rows now: 1
+header + 34 data, was 37), and added a real source URL to every row's confidence
+column (upgrading all 34 from "probable"/bare "confirmed" to "confirmed <url>").
+**Also corrected panel 30's title from "Toy Story" to "Toy Story 2"** -- the H:AB
+data I had filled for that row was still the 1995 film's; re-pulled and replaced
+with the actual Toy Story 2 (1999, tt0120363) data (director team Lasseter/
+Brannon/Unkrich, Nov 24 1999, 92 min, $90M budget, $497M worldwide, etc.).
+
+While re-checking whether this changed the sequel/reboot/spin-off count from the
+prior sweep (9), caught and fixed two of my own miscodings that had been
+inconsistent with the field's actual question ("is this film itself a sequel/
+reboot/spin-off", not "did it spawn sequels"): The Human Centipede (First
+Sequence) and Guardians of the Galaxy were both wrongly marked "Si" (Human
+Centipede is the *original* film in its trilogy; Guardians is an original
+screenplay merely set in the shared MCU, not a sequel/reboot of anything). Both
+corrected to "No" with an explanation in the cell. **Recomputed strict
+sequel/reboot/spin-off count with Toy Story 2 included and the two errors
+removed: 8** (Aliens, Godzilla, Blade Runner 2049, Terminator 2, Scream 2, The
+Matrix Reloaded, Toy Story 2, Ghostbusters II) -- not 9, and not 10. Re-ran every
+other field split from the prior sweep against the corrected data too (country,
+language, genre count, certificate, Oscar wins, writer-block count, UK
+co-production); none of them depend on the Toy Story identity or the sequel-flag
+column, so none of their counts changed.
+
+Then closed the two gaps flagged at the end of the prior sweep entry:
+
+1. **Star Wars: A New Hope's `/keywords/` page**, never fetched before, now
+   pulled. It does carry a "Franchise (1)" keyword category ("star wars"). Real
+   top-5 Plot Details keywords by the page's relevance order: rebellion, princess,
+   space opera, good versus evil, jedi -- replacing the placeholder "not captured"
+   text that was in the template's Keywords/Notas cells for this row.
+
+2. **Full "Franchise" keyword-category check across all 34 panels**, re-verified
+   one by one directly from each film's live `/keywords/` "Jump to" summary line
+   (not from memory this time). Films whose keyword page carries a Franchise
+   category: **Aliens, Alien, Mission: Impossible, Godzilla, Star Wars: A New
+   Hope, Blade Runner 2049, Guardians of the Galaxy, Terminator 2: Judgment Day,
+   Scream 2, The Matrix Reloaded, Toy Story 2, Raiders of the Lost Ark = 12
+   films, not 10.** Notably Ghostbusters II -- a numbered direct sequel -- does
+   *not* carry a Franchise keyword category on IMDb, confirming this is an
+   IMDb-editorial-curation quirk and not a reliable proxy for "is a sequel."
+
+Result: **both gaps are now closed with verified (not recalled) data, and neither
+resolves to exactly 10.** The corrected sequel/reboot/spin-off field (8) and the
+verified Franchise-keyword-category field (12) both join the earlier near-misses
+as clean negatives, not hits. No single IMDb field tested across this session (see
+prior sweep entry for the full list) produces exactly 10 with a natural reading
+and no manual exceptions. Untested still: combinations of two fields, and any
+field not represented in the current template. Date: 2026-08-20.
+
+## Pairwise two-field combination sweep, 2026-08-20
+
+Method: built 24 natural single-field boolean criteria from the filled audit data
+(is-sequel/reboot, won-an-Oscar, nominated-for-Oscar, single-writer-credit-block,
+exactly-2-genres, exactly-3-genres, UK-co-production, single-country,
+single-language, certificate=R/PG-13/PG, involves-black-and-white,
+first-genre=Action, genre-contains-Sci-Fi/Thriller/Horror, distributor=Warner
+Bros., aspect-ratio=2.39:1, runtime>140min, runtime<100min, budget>=$100M,
+budget<$10M, >=3 production companies, has-IMDb-Franchise-keyword-category), then
+computed AND and OR for every pair (300 pairs x 2 = 600 tests) looking for exactly
+10.
+
+Result: **17 of the 600 combinations land on exactly 10.** Flagged to the user as
+almost certainly multiple-comparisons noise (with 600 near-independent trials over
+34 items, several coincidental exact-10 hits are expected by chance alone, the
+same caveat this file has applied to checksum-valid mnemonics throughout). Full
+list of the 17 hits is in the chat transcript, not reproduced here since none of
+them were treated as validated. Only one had a genuinely single-concept natural
+reading rather than an arbitrary AND/OR of two unrelated facts: **single country
+of origin AND single language** (i.e. "a purely domestic, monolingual
+production," as opposed to an international co-production or multi-language
+film) -- gives exactly these 10: Close Encounters of the Third Kind, Escape from
+Alcatraz, Ghostbusters II, Mad Max, Scream 2, Sharknado, Spartacus, Star Wars: A
+New Hope, The Crimson Rivers, Toy Story 2.
+
+## First end-to-end derivation attempt against the country+language-split hypothesis, 2026-08-20
+
+Per house rule, a split landing on 10 is not evidence by itself -- only a derived
+address match is. Built the full 24-word candidate space for the "single country +
+single language" intruder set above (panels 4, 7, 9, 15, 18, 24, 26, 28, 30, 31
+dropped; the other 24 kept, in panel order) and ran it through `tools/oracle.py`'s
+`check()` function directly (imported in-process, not via subprocess, for speed).
+
+Word candidates used per keeper panel:
+- 15 panels have exactly one literal-substring candidate from `data/films.csv`
+  (unchanged): hard, alien (x2, panels 3 and 5), now, ill, life, visit, gravity,
+  solar, blade, galaxy, bar, day, matrix.
+- 6 panels have multiple tied literal candidates, all included: Paths of Glory
+  (glory/path), Mission: Impossible (miss/possible), The Man in the Iron Mask
+  (man/iron/mask), A Clockwork Orange (clock/orange/range/work), First Man
+  (first/man), The Human Centipede (human/first/man).
+- 3 panels have **zero literal candidate** and needed non-literal, sourced
+  guesses to be testable at all: The Goonies (one/brand/chunk -- character names,
+  carried over from pre-revision research, see "leads.md" history above), Léon:
+  The Professional (milk -- Léon's iconic milk-drinking habit, sourced from an
+  IMDb user review already fetched during the field-audit pass, not asserted from
+  memory alone), The Shining (hotel/maze -- both literal IMDb keywords already
+  recorded for this panel: "haunted hotel", "hedge maze"). Raiders of the Lost
+  Ark (whip/snake/gold/hat -- iconic props/scenes, carried over from pre-revision
+  leads.md research, previously tested only against the old H1 intruder set, not
+  this one). **These 4 panels' words are guesses, explicitly weaker than the
+  literal-substring candidates, and not independently re-verified beyond what is
+  noted above -- flagged as such, not asserted as fact.**
+
+Total candidate space: 2 x 2 x 3 x 4 x 2 x 3 (six tied panels) x 3 (Goonies) x 1
+(Leon) x 4 (Raiders) x 2 (Shining) = 6,912 candidates, generated by direct
+product and checked in-process (0.6s total, ~11,400/s).
+
+Result: **0 matches.** `tools/oracle.py --selftest` passed before this run. This
+clears the specific 6,912-candidate space tested; it does **not** disprove the
+country+language-split hypothesis itself, since 3 of the 24 keeper panels
+(Goonies, Leon, Raiders, Shining minus Shining has 2 tried) had no literal word at
+all and were filled with guesses that may simply be wrong. A negative result here
+is much weaker evidence against the hypothesis than the earlier H1 sweeps were
+against H1, precisely because of this gap -- unlike H1's exhaustive coverage, this
+run leaves real word-choice uncertainty unresolved for those 3-4 panels. Date:
+2026-08-20.
+
+## Widened non-literal candidate lists for the 4 zero-literal-word panels, re-run, 2026-08-20
+
+Method: rather than free-associating from memory, cross-referenced the *actual*
+IMDb `/keywords/` lists already fetched and recorded during the field-audit pass
+for the 4 zero-literal-candidate keeper panels (Goonies, Leon, Raiders, Shining)
+against the real 2048-word BIP39 list, keeping only words that are both (a) BIP39
+words and (b) a genuine keyword/plot element IMDb itself lists for that film (not
+just superficially plausible). This is the same discipline used for "chunk"
+(Goonies) earlier, extended to the other 3 panels and widened for Goonies/Raiders
+too. Result, replacing the single-guess lists from the previous entry:
+
+- **The Goonies**: one, brand, chunk (character names, from pre-revision
+  research) + gold, cave, beach, rescue (all literal IMDb Plot Details keywords
+  for this panel) = 7 candidates, up from 3.
+- **Leon: The Professional**: milk (from IMDb review text) + gun (from the IMDb
+  keyword "child with a gun") = 2 candidates, up from 1.
+- **Raiders of the Lost Ark**: whip, snake, gold, hat (pre-revision leads.md) +
+  horse, ship, knife (all literal IMDb Plot Details keywords) = 7 candidates, up
+  from 4.
+- **The Shining**: hotel, maze (IMDb keywords "haunted hotel", "hedge maze") +
+  snow, ghost, mirror, blood (all also literal IMDb Plot Details keywords for
+  this panel) = 6 candidates, up from 2.
+
+Words considered but rejected as not in the real BIP39 list despite being
+genuine keywords: map, attic, skeleton, dungeon, outlaw, waterfall (Goonies);
+plant, apartment, grenade, eyeglass(es) (Leon); ark, nazi (Raiders); labyrinth,
+tricycle, typewriter, axe, elevator (Shining).
+
+New total candidate space: same 288-way product across the 6 tied-literal panels
+x 7 (Goonies) x 2 (Leon) x 7 (Raiders) x 6 (Shining) = **169,344 candidates**,
+checked in-process against `tools/oracle.py`'s `check()` in 15.3s (~11,100/s).
+
+Result: **0 matches**, `--selftest` passed beforehand. This is a substantially
+more thorough negative than the previous 6,912-candidate run (24.5x the coverage
+on the 4 previously weakest panels, still grounded entirely in either literal
+substrings or IMDb's own listed keywords/reviews, no free-associated guesses).
+Still does not prove the country+language-split hypothesis wrong -- the true word
+for any of these 4 panels could be something IMDb's top keywords don't surface,
+or a character name not covered here, or the hypothesis itself could simply be
+wrong -- but it meaningfully narrows the space where it could still be hiding.
+Date: 2026-08-20.
+
+## Full 38.9M-candidate run, also widening the 6 tied-literal-substring panels, 2026-08-20
+
+Method: extended the same non-invented, keyword-sourced discipline to the 6
+panels that already had multiple *tied literal* BIP39 substrings (kept those,
+added more IMDb-keyword-grounded non-literal words on top, same filter as
+before: must be both a real BIP39 word and an actual IMDb-listed keyword/plot
+element for that specific film): Paths of Glory (+ soldier, battle, general,
+pistol), Mission: Impossible (+ train, spy, gadget, escape, bomb, magic,
+subway), The Man in the Iron Mask (+ twin, guard, river, horse), A Clockwork
+Orange (+ chair -- most candidate keywords for this one, e.g. gang/thug/
+robbery/suicide/violence, are not actual BIP39 words), First Man (+ moon,
+rocket, marriage), The Human Centipede (+ doctor, mask, illness, cabin). Full
+per-panel candidate lists and the words checked-and-rejected as non-BIP39 are in
+`analysis/bruteforce_country_lang_split_mp.py`.
+
+New total: 38,896,200 candidates (verified by direct `itertools.product` count
+match and by two independent spot-checks of the script's mixed-radix
+index-to-combination arithmetic before running, both exact). Given the size, this
+run was handed to the user to execute locally with a multiprocess version of the
+same `oracle.check()` logic (`analysis/bruteforce_country_lang_split_mp.py`,
+12 workers, 200k-candidate chunks) rather than run single-process in this
+session. `--selftest` passed at the start of their run.
+
+**Result reported by the user: 0 matches across the full 38,896,200-candidate
+space**, at ~46,000/candidates-sec sustained across 12 cores (~14 minutes total).
+This is the most thorough test yet of the country+language-split hypothesis --
+every literal substring candidate for every keeper panel, plus every
+IMDb-keyword-grounded non-literal candidate found so far for the 6 tied and 4
+zero-literal panels, crossed exhaustively. Still not a disproof of the hypothesis
+itself (a word IMDb's own keyword lists don't surface, for any of these 10
+under-determined panels, would not have been covered), but the space of "the
+right word was somewhere fairly obvious in IMDb's keyword list" is now
+exhausted for this specific intruder set.
+
+Operational note: the user's machine had what sounded like a serious freeze/hard
+reboot partway through this run (unresponsive to input, stuck cursor) while also
+on a video call -- 12 processes at full CPU for ~14 minutes concurrent with video
+call load is a plausible thermal/stability trigger on laptop hardware. Worth
+reserving 1-2 cores headroom (`--workers <cpu_count-2>`) for any future run of
+this kind, especially if the machine will be used for anything else at the same
+time. Date: 2026-08-20.
+
+## Full IMDb keyword lists (not just top 5-6) for the 5 zero-literal-word panels, 2026-08-20
+
+Method: the field-audit spreadsheet only recorded each panel's top 5-6 IMDb
+keywords by relevance. For the 5 panels with zero literal title-substring
+(Goonies, Leon, Sharknado, Raiders, Shining), fetched each film's full
+`/keywords/` page in the browser (cookies set for `en_US` locale first, per the
+operational note above), expanded all "N more" / "See all" sections via a JS
+click on the actual DOM buttons (not just scrolling), and extracted every
+keyword tag via `document.querySelectorAll('a[href*="/search/title/?keywords="]')`.
+This is IMDb's own full keyword corpus for each film, not a partial or
+by-relevance-truncated sample. Kept only keyword tags that are themselves a
+single word matching the real BIP39 English wordlist exactly (not a fragment of
+a multi-word tag like "one" from "one night timespan" -- that would be noise;
+the tag itself has to be the BIP39 word), same "genuine listed keyword, not
+free-associated" discipline as the earlier keyword pass. Full keyword lists
+saved to the session scratchpad, not committed to the repo (large, purely
+intermediate).
+
+Results (chase panel counts: Goonies 343 keyword tags total, Leon 318,
+Sharknado 119, Raiders 328, Shining 415 -- Shining's total includes a large
+generic "content advisory" tag cluster, e.g. "brutal", "shocking", "morbid",
+"viewer discretion is advised", that reads as auto-generated severity tagging
+rather than plot-specific keywords; flagged separately below, not treated as
+equally strong as plot/prop/setting words):
+
+- **The Goonies** (was: one, brand, chunk, gold, cave, beach, rescue -- 7):
+  +32 new: gadget, legend, chase, sword, coin, toilet, bicycle, tunnel, jewel,
+  pizza, fire, sheriff, forest, skull, piano, child, trap, ship, pistol, arrest,
+  organ, asthma, book, knife, escape, marble, camera, kiss, thunder, rain,
+  wish, police, hidden, danger, humor. **39 total now.**
+- **Leon: The Professional** (was: milk, gun -- 2; "gun" itself is not a
+  standalone tag on this page, only inside multi-word tags like "child with a
+  gun", kept from the earlier review-text/keyword-phrase pass): +9 new: girl,
+  police, elevator, crush, hotel, love, pistol, knife, weapon, shield. **11
+  total now** (10 standalone-tag + milk from review text).
+- **Sharknado** (was: tornado only, non-literal portmanteau -- 1; **"tornado"
+  is also a genuine standalone IMDb keyword tag for this film**, upgrading it
+  from portmanteau-inference to directly-sourced): +9 new: fish, dog, beach,
+  gun, pistol, animal, vehicle, car, child. **10 total now**, the biggest
+  relative gain of the 5 panels (this panel is a TV movie with a much shorter
+  page, so the earlier top-5-6 pass barely scratched it).
+- **Raiders of the Lost Ark** (was: whip, snake, gold, hat, horse, ship, knife
+  -- 7, from a pre-revision props/scenes list, not this keyword page -- "gold"
+  specifically is not a keyword tag on the current page, kept as-is from that
+  older source): +35 new from the keyword page: truck, chase, jungle, torch,
+  mirror, canyon, desert, fire, bar, love, ritual, lecture, dress, tent,
+  island, wine, blood, warrior, escape, kiss, pistol, sword, rescue, spider,
+  basket, soldier, spirit, alcohol, car, hero, magic, weapon, mechanic, faith,
+  fiction. **42 total now**, the single largest expansion of the 5 panels.
+- **The Shining** (was: hotel, maze, snow, ghost, mirror, blood -- 6): +19 new
+  plot/prop/setting words: bar, chase, elevator, winter, marriage, kitchen,
+  author, knife, doctor, window, door, toy, chef, escape, rescue, kiss, danger,
+  night, gift, boy, airport ("maze" itself is not a standalone tag -- the real
+  tags are "labyrinth" and "hedge maze"; "maze" was presumably kept from
+  earlier as a paraphrase, not re-verified here). **Separately, +15 generic
+  content-advisory words** that are also literal BIP39 matches but read as
+  severity/mood tagging rather than plot-specific (cruel, fatal, shock,
+  sadness, man, woman, vicious, tragic, sick, weird, suffer, limit, wrong,
+  rare, fiction) -- flagged as weak, not promoted to the same tier as the 25
+  plot/prop words without the user's call.
+
+This is a large expansion of the sourced (not free-associated) candidate space
+for exactly the 5 panels the user asked to prioritize. Not yet run against any
+intruder hypothesis or through `oracle.py` -- the combined candidate space
+across all 5 panels (39 x 11 x 10 x 42 x ~25-40) is large enough that testing it
+naively would need curation first (top few per panel) or a lot more compute
+than the 38.9M run above, and per the user's stated priority the criterion
+search still comes before more word brute-forcing. Date: 2026-08-20.
+
+## Curated top-5-per-panel run against the country+language-split hypothesis, 2026-08-20
+
+Computed the exact size of testing the full widened keyword lists above against
+the leading (noise-suspected) country+language-split hypothesis: **4,389,396,480
+candidates** (~113x the 38.9M run, ~26h even at the previous 12-worker ~46,000/s
+rate) -- too large to run without checking in, given the freeze/reboot the
+38.9M run already caused. Presented the size and two options to the user
+(run the full 4.39B overnight, or curate down first); user chose to curate:
+5 most iconic/distinctive words per zero-literal panel, rest kept as a documented
+secondary tier (not discarded) -- see `analysis/leads.md`, "Curated top-5 per
+panel, 2026-08-20" for the exact picks and reasoning per panel.
+
+Curated space: **4,800,000 candidates** (24 keeper panels, same panels/order as
+the original 38.9M run, `analysis/bruteforce_curated_top5.py`). Ran in-process,
+single-thread (small enough not to need multiprocessing): `--selftest` passed,
+~13,000/s sustained, 373s total.
+
+**Result: NO MATCH across all 4,800,000 combinations.** This does not disprove
+the country+language-split hypothesis (only the 5-word-per-panel curated slice
+was tested, not the full 4.39B expanded space, and curation is a judgment call
+that could exclude the true word), but it does rule out every combination of
+each zero-literal panel's single most iconic/obvious word alongside all the
+literal-substring and tied-literal candidates elsewhere. If this hypothesis is
+still considered live, the next step would be either the full 4.39B run
+(overnight, with CPU headroom, not on a video call) or curating a second tier
+(the "5 most iconic" words swapped for the next-best 5) rather than assuming
+the hypothesis is dead. Date: 2026-08-20.
+
+## Full programmatic re-derivation of the criterion sweep, catches a parsing bug, 2026-08-20
+
+The user asked to focus specifically on finding the real intruder criterion,
+and pointed out uncertainty about whether the earlier "17 combinations" (see
+"Pairwise two-field combination sweep" above) had actually been tested end to
+end. They hadn't -- only the country+language-split hit had a derivation
+attempt; the other 16 were never checked against `oracle.py` at all. Since the
+exact 17-hit list from that session was never saved to a file (only in that
+session's chat transcript), rebuilt the whole sweep from scratch,
+programmatically, from `analysis/imdb_field_audit.xlsx`'s raw columns (country,
+language, genres, certificate, color, aspect ratio, runtime, budget,
+production-company count, writer credits, awards text, sequel status), rather
+than by hand, to remove any manual-counting risk.
+
+**Caught a real bug while doing this**: the original "single-writer-credit-block"
+field (documented as landing on 9, a near-miss) was being computed by naively
+splitting each film's writers-column text on every semicolon. Panel 28 (Scream
+2)'s writers field is `"Kevin Williamson (characters; written by)"` -- one
+person, credited for two roles, with the semicolon *inside* the parenthetical
+describing his roles, not separating two different writers. A naive split
+miscounts this as 2 writer blocks. Re-parsed with a proper "split on `;` only
+outside parentheses" routine and verified the fix by hand against all 34 rows'
+writers text: **single-writer-credit-block now correctly comes out to exactly
+10** (Leon: The Professional, The Visitors, Star Wars: A New Hope, Gravity,
+Sharknado, Terminator 2, Scream 2, The Matrix Reloaded, Ghostbusters II, The
+Human Centipede) -- not 9. This is a genuinely single-field, single-concept
+criterion (not an arbitrary two-field AND/OR), so tested it first and
+separately, ahead of the pairwise re-sweep.
+
+Built the 24-word candidate space for this hypothesis (panels 1,2,3,4,5,6,7,8,
+9,10,11,12,14,15,17,20,21,22,23,24,25,30,32,33 kept, in order) using literal
+substrings from `data/films.csv` plus the curated top-5 words for the
+zero-literal panels in the keeper set (8 Goonies, 32 Raiders, 33 Shining --
+Leon and Sharknado are dropped intruders under this specific hypothesis, so
+their words don't matter here). Space: 480,000 candidates, ran in-process in
+39.7s at ~12,000/s. **Result: NO MATCH.** `--selftest` passed. Script not
+separately committed (one-off, folded into the batch runner below).
+
+Re-ran the full 24-field x 600-pair sweep programmatically with the corrected
+data (24 fields: is-sequel [corrected count 8, unchanged], won-Oscar [13],
+nominated-or-won-Oscar [17], single-writer-block [10, corrected from 9],
+exactly-2-genres [9], exactly-3-genres [22], UK-co-production [9],
+single-country [20], single-language [16], certificate=R/PG-13/PG [14/8/8],
+involves-black-and-white [3], first-genre=Action [14], genre-contains-
+Sci-Fi/Thriller/Horror [8/5/5], distributor=Warner Bros. [7], aspect-ratio=
+2.39:1 [19], runtime>140min [7], runtime<100min [6], budget>=$100M [7],
+budget<$10M [5], >=3 production companies [19], has-Franchise-keyword [12,
+using the already-verified list from the "Gaps closed" entry above]). Full
+script: see the batch runner referenced below.
+
+**Result: 16 of the 600 pairwise AND/OR tests land on exactly 10** (one fewer
+than the previously-recalled 17, consistent with the single-writer-block fix:
+that field's old wrong count of 9 was presumably producing one extra
+coincidental pairwise hit that the corrected count of 10 no longer produces).
+Combined with the single-field hit above, **17 total exact-10 criteria**,
+matching what the user recalled. Full list of the 16 pairwise hits and their
+exact dropped-panel sets (all newly computed, not from memory) -- most are
+arbitrary-looking AND/OR pairs of unrelated facts, flagged as multiple-
+comparisons noise same as before; only "single_country AND single_language"
+(already tested, see above, 0 match on the curated slice) has a clean
+single-concept reading:
+
+1. nominated-or-won-Oscar AND >=3 production companies -> drops [1,5,12,17,19,20,22,23,25,27]
+2. exactly-2-genres OR involves-B&W -> drops [1,2,5,16,17,21,24,28,29,33]
+3. exactly-3-genres AND single-language -> drops [4,7,15,18,20,22,23,26,30,31]
+4. single-language AND >=3 production companies -> drops [4,5,15,17,20,22,23,26,28,33]
+5. certificate=PG-13 OR involves-B&W -> drops [2,10,11,14,16,17,19,20,21,23]
+6. certificate=PG-13 OR genre-has-Thriller -> drops [1,10,11,14,15,16,19,20,21,23]
+7. involves-B&W OR genre-has-Sci-Fi -> drops [2,4,5,11,17,19,21,24,27,29]
+8. involves-B&W OR budget>=$100M -> drops [2,11,12,17,19,21,22,23,27,29]
+9. first-genre=Action AND aspect-ratio=2.39:1 -> drops [1,4,10,11,13,22,23,27,29,31]
+10. genre-has-Thriller OR genre-has-Horror -> drops [1,3,5,10,11,15,19,28,33,34]
+11. genre-has-Thriller OR runtime<100min -> drops [1,2,4,10,11,15,19,26,30,34]
+12. genre-has-Thriller OR budget>=$100M -> drops [1,10,11,12,15,19,22,23,27,29]
+13. genre-has-Thriller OR budget<$10M -> drops [1,2,4,7,10,11,15,17,19,26]
+14. genre-has-Horror OR runtime<100min -> drops [2,3,4,5,19,26,28,30,33,34]
+15. genre-has-Horror OR budget<$10M -> drops [2,3,4,5,7,17,26,28,33,34]
+
+(16 listed as 1-15 above since "single_country AND single_language" is the
+16th and already covered separately.)
+
+Rather than pre-judge which of these are "real" vs noise by eyeballing them,
+built candidate word spaces for all 15 not-yet-tested hits (literal substrings
++ curated top-5 for whichever zero-literal panels each hits' keeper set
+includes) and ran every one through `oracle.py`'s `check()`, in-process,
+single-thread (deliberately not multiprocess/12-core, to avoid repeating the
+freeze incident, since this is a background/unattended run). Combined space
+across all 15: 90,864,000 candidates, individual hypothesis spaces ranging
+288,000 to 24,000,000. At ~13,000/s single-thread this is roughly 2 hours;
+launched as a background process rather than run synchronously. Script:
+`analysis/bruteforce_all_criterion_hits.py`. See the next entry for the
+result once it completes.
+
+## All 17 exact-10 criterion hits derivation-tested: 0 matches, 2026-08-20
+
+The single-thread background run (previous entry) completed 9 of 15
+hypotheses cleanly (all no match) before the user, present and not on a call,
+offered to switch to multiprocessing since the single-thread pace was slow.
+Killed the single-thread job (PIDs 31512/35424) and restarted the 6 remaining
+hypotheses -- including "thriller OR horror," which was mid-run and had to be
+redone from scratch -- with a 10-worker multiprocess version (same mixed-radix
+chunked approach as `bruteforce_country_lang_split_mp.py`, 10 of 12 cores, 2
+held back as headroom per the earlier freeze-incident lesson; safe to use more
+workers here since it's evening, no video call, user actively present and
+monitoring).
+
+Result: **~65,000-68,000/s sustained across 10 workers, all 6 remaining
+hypotheses done in ~10 minutes total (vs. an estimated ~70 more minutes
+single-thread) -- 0 matches on every one:**
+
+- thriller OR horror (14.4M): no match (222s)
+- thriller OR runtime<100min (3.6M): no match (55s)
+- thriller OR budget>=$100M (18M): no match (266s)
+- thriller OR budget<$10M (2.88M): no match (53s)
+- horror OR runtime<100min (1.44M): no match (26s)
+- horror OR budget<$10M (288K): no match (18s)
+
+**Combined with everything already tested, all 17 of the 17 exact-10
+criterion hits from the reconstructed 24-field sweep have now been
+end-to-end derivation-tested against the escrow address, using literal
+substrings plus the curated top-5 words for whichever zero-literal panels
+(Goonies, Leon, Sharknado, Raiders, Shining) each hypothesis's keeper set
+includes: 0 matches, across every single one.** This is a substantially
+stronger negative than anything before it in this investigation -- it's not
+"one leading hypothesis failed," it's "every field-based criterion (single or
+paired) found by exhaustively sweeping ~25 IMDb metadata fields across all 34
+panels fails," at least within the curated top-5-per-panel word space.
+
+What this does *not* rule out, to be explicit:
+- A field not represented in `imdb_field_audit.xlsx` at all (exact award
+  category names, filming-location country vs. production country,
+  IMDbPro-only data, a three-field combination, a numeric cutpoint other than
+  the ones tested).
+- The true word for a curated panel not being in that panel's top-5 (curation
+  was a judgment call, not exhaustive -- the secondary tier in
+  `analysis/imdb_field_audit.xlsx` and `leads.md` has 37, 7, 5, 37, and 22
+  more words respectively for Goonies/Leon/Sharknado/Raiders/Shining that
+  were not part of this run).
+- The mechanism itself being something other than "drop 10 by one shared
+  metadata property, keep 24 in panel order."
+
+Scripts: `analysis/bruteforce_all_criterion_hits.py` (single-thread version,
+covers the same 15 hypotheses) plus the ad hoc 10-worker rerun (not
+separately committed, logic identical to `bruteforce_country_lang_split_mp.py`
+generalized to loop over multiple hypotheses). Date: 2026-08-20.
+
+## Exhaustive C(34,10) sweep against the single fixed-word table: 0 matches, 2026-08-21
+
+Per the user's request, tested literally every possible way to drop 10 of the
+34 panels (keep the other 24, in panel order), using the single definitive
+word per panel finalized 2026-08-20 (see leads.md, "Single definitive word
+per panel, all 34, 2026-08-20"). This does not depend on any intruder
+criterion at all -- it is the complete space of "drop exactly 10 of these 34
+fixed words," C(34,10) = 131,128,140 combinations, addressed directly via
+combination unranking (the combinatorial number system) so the work could be
+chunked across workers without generating all prior combinations first.
+`analysis/bruteforce_all_10of34.py`, 10-worker multiprocess.
+
+The run was interrupted once at ~14M/131M (14M lost to opening a VS Code
+window, which closed the terminal it was running in) and restarted from
+scratch under Claude's own background process instead, to avoid depending on
+a terminal window staying open.
+
+**Full run completed this time: 131,128,140/131,128,140 combinations checked,
+~70,800/s sustained across 10 workers, 1847.4s (~30.8 minutes) total.
+`--selftest` passed beforehand. Result: NO MATCH.**
+
+This is the strongest possible negative result for this specific hypothesis
+space: it is not "one criterion failed" or "one curated word list failed,"
+it is "every single one of the 131 million ways to pick which 10 of the 34
+panels are intruders fails," conditional entirely on the 34-word table being
+correct. Since this is now a *certainty* within that word table (not a
+probabilistic/sampled result), the only ways forward from here are:
+
+1. **One or more of the 34 single-word picks is wrong.** The most suspect
+   ones are the judgment calls (12 panels that had a tied literal
+   candidate -- see the table in `analysis/SUMMARY_FOR_EXTERNAL_AI_2026-08-20.md`
+   for exactly which -- and especially the 5 panels with no literal word at
+   all: Goonies/chunk, Leon/milk, Sharknado/tornado, Raiders/whip,
+   Shining/hotel, each of which has a substantial secondary-tier word list
+   not tried here).
+2. **The mechanism itself is not "drop exactly 10, keep 24 in panel order."**
+   Worth re-examining the puzzle's own rules text for anything that
+   contradicts this assumption.
+3. Some panel's **film identification** is wrong (see the "probable" vs
+   "confirmed" panels list).
+
+Since finalizing one word per panel makes each individual hypothesis test
+instant, the natural next step if a specific panel's word is suspected wrong
+is to swap in that panel's next-best candidate and re-run this same C(34,10)
+sweep (still ~131M combinations, ~31 minutes) -- much cheaper than the
+various targeted-hypothesis approaches used earlier, since it no longer
+requires guessing *which* 10 to drop, only *which single word* is right for
+the suspect panel(s). Date: 2026-08-21.
+
+## NEW CRITERION FOUND: IMDb Connections self-reference among the 34 panels, 2026-08-21
+
+Per an external-AI-assisted research plan the user brought back, checked IMDb's
+"Connections" tab (References/Referenced in/Follows/Spoofed in/etc.) for all
+34 panels, specifically looking for cross-references *between the 34 films
+themselves* (not references to outside media). Fetched every film's
+`/movieconnections/` page live (cookies set for en_US locale), expanded all
+"See all" sections via JS click + a 500ms render wait, then grepped each
+page's text for all 33 other panel titles (exact "Title (Year)" patterns to
+avoid false positives from generic title mentions in unrelated TV episode
+titles -- e.g. "Blade Runner (1982)" mentions on other pages do NOT count for
+panel 22, which is specifically Blade Runner 2049; verified this distinction
+carefully throughout).
+
+Found a real, documented web of 30 cross-references among the 34 films (full
+edge list below). Counting each panel's degree (how many *other panels in
+this specific 34-film set* it has a documented Connections-tab link to, in
+either direction):
+
+**Exactly 10 panels have zero connections to any other panel in the set:**
+Escape from Alcatraz (7), Mission: Impossible (10), Life of Pi (12), The Man
+in the Iron Mask (14), First Man (20), Solaris (21), Blade Runner 2049 (22),
+Barry Lyndon (25), Ghostbusters II (31), The Human Centipede (34).
+
+This is a genuinely single-concept, non-arbitrary, self-referential criterion
+-- "does this film have an IMDb-documented Connections-tab link to another
+film in this exact set of 34" -- and it lands on exactly 10 without any
+manual adjustment, unlike every field tried so far. It's also structurally
+different from every prior hypothesis: those were all properties of a single
+film's own metadata (country, language, awards, etc.); this one depends on
+the *set itself*, which fits a puzzle deliberately built around a specific
+set of 34 films far better than a coincidental metadata split would.
+
+Full edge list (panel-panel, both directions imply a link either way):
+8-32, 13-16, 13-17, 26-32, 32-18, 32-30, 33-3, 33-15, 33-27, 33-28, 3-5,
+3-24, 2-9, 2-17, 4-17, 1-17, 1-30, 11-3, 19-5, 19-18, 23-27, 23-32, 24-18,
+28-3, 28-5, 28-18, 28-27, 29-3, 29-6, 29-27.
+
+**Caveat, disclosed not hidden**: 3 of the 34 pages (A Clockwork Orange,
+Star Wars: A New Hope, Toy Story 2) have very large "Referenced in" counts
+(870, unknown-but-large, and moderate respectively) that did not fully
+render as text even after clicking "See all" -- likely IMDb's virtualized
+list rendering only materializing visible DOM nodes. Real connections to/from
+these 3 films were still caught via the *reciprocal* check (searching for
+their titles on every other film's own, fully-rendered page), so the graph
+above is very likely complete or near-complete, but this is not a
+mathematical guarantee the same way the field-audit-derived counts were.
+
+**First derivation test**: built the 24-word mnemonic using the single fixed
+word per panel (see leads.md) for the 24 keeper panels under this hypothesis
+-- `hard glory alien mad alien now chunk art ill milk river visit orange hope
+gravity galaxy close tornado day cream matrix toy whip hotel` -- checked via
+`tools/oracle.py`: **NO MATCH**.
+
+**Second derivation test, widened to top-5 curated words for all 5
+zero-literal panels** (Goonies, Leon, Sharknado, Raiders, Shining are all
+*kept* panels under this hypothesis, unlike the country+language split where
+Sharknado was dropped) -- 1,000,000 candidates, ran in-process in 72.4s.
+`--selftest` passed. **Result: NO MATCH.**
+
+Not yet tried: the full secondary-tier word lists for these 5 panels
+(1,698,278,400 combined candidates, ~7.2h at 10-worker multiprocess speed) --
+flagged to the user given the size, per the established practice of not
+launching a many-hour job without checking in first. Given how much stronger
+this criterion is than anything found before it, this is considered the
+current best lead in the whole investigation, worth the larger run if the
+user wants to pursue it. Date: 2026-08-21.

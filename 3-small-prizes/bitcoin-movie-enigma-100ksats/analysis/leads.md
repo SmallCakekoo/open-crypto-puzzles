@@ -284,3 +284,203 @@ Byproduct worth flagging: panel 20 ("First Man") and panel 34 both contain the
 literal candidates "first" and "man"; if a well-formed answer does not reuse a word
 across two different panels, that favors "human" for panel 34's word without
 confirming it.
+
+## Exhaustive literal-substring re-check, all 34 titles, 2026-08-20
+
+Method: the literal-substring candidates in `data/films.csv` had accumulated by eye
+over many separate passes, never re-checked mechanically end to end against the
+full 2048-word BIP39 list. Ran that exhaustive check now (every BIP39 word, as a
+substring within each single word of each of the 34 titles, no crossing spaces,
+whole-word beats substring for the same title word per the established hierarchy).
+Found several literal substrings earlier passes had missed; `data/films.csv`
+updated. Full detail in `analysis/tested.md`. Most notably, **panel 9 (Spartacus)
+now has a real literal candidate for the first time: "art" (sp-ART-acus)** -- it
+had been "none" since the puzzle's very first pass.
+
+## Non-literal candidates: spelled-out numerals and a portmanteau half, 2026-08-20
+
+Two candidates proposed by the user, both real BIP39 words, neither a literal
+substring of their title's actual characters (so kept here, not in
+`data/films.csv`'s literal-only column):
+
+- **"two"**, for the 3 panels whose title contains a bare numeral 2 (panel 27
+  Terminator 2: Judgment Day, panel 28 Scream 2, panel 30 Toy Story 2) -- the
+  digits "2" spelled out as the English word. Not literal (the letters t-w-o do
+  not appear in any of these titles), but a very direct, low-ambiguity mapping
+  (a numeral has exactly one spelled-out English word), arguably as trustworthy as
+  a literal substring even though it fails the letter-for-letter test. Not yet
+  tested against any intruder hypothesis.
+- **"tornado"**, for panel 26 (Sharknado) -- not a substring of "Sharknado" (the
+  letters don't line up: sh-A-R-K-N-A-D-O vs t-O-R-N-A-D-O, no unbroken match),
+  but well documented as the second half of the film's own title portmanteau
+  (Shark + tornado = Sharknado), independent of this puzzle. This exact word was
+  already tried once before, under the old H1 intruder set, with 0 matches
+  (`analysis/tested.md`); it has not yet been tried under any hypothesis where
+  Sharknado is a keeper rather than an intruder (it currently sits as one of the
+  10 dropped panels under the leading "single country + single language"
+  hypothesis, so this word isn't needed there).
+
+Still zero candidate of any kind (literal or otherwise sourced) for: panel 13
+(Leon: The Professional, beyond "milk"/"gun" already added from IMDb
+keywords/review text, see `analysis/tested.md`), panel 32 (Raiders of the Lost
+Ark, beyond the pre-revision theme-word list and the IMDb-keyword words already
+added), panel 33 (The Shining, beyond the IMDb-keyword words already added). Panel
+8 (The Goonies) similarly has no literal candidate but does have IMDb-keyword and
+character-name candidates already recorded (`analysis/tested.md`).
+
+## Full IMDb keyword-page sweep for the same 5 zero-literal panels, 2026-08-20
+
+Per the user's explicit priority ("find real words for the 5 zero-candidate
+panels"), went back to all 5 zero-literal-substring panels and pulled each
+film's *complete* IMDb `/keywords/` page (not just the top 5-6 already in the
+field audit), keeping only tags that are themselves a whole BIP39 word. Full
+method and per-panel diffs in `analysis/tested.md`, "Full IMDb keyword lists...
+2026-08-20". Updated totals:
+
+- **The Goonies** (panel 8): one, brand, chunk, gold, cave, gadget, beach,
+  rescue, legend, chase, sword, coin, toilet, bicycle, tunnel, jewel, pizza,
+  fire, sheriff, forest, skull, piano, child, trap, ship, pistol, arrest,
+  organ, asthma, book, knife, escape, marble, camera, kiss, thunder, rain,
+  wish, police, hidden, danger, humor.
+- **Leon: The Professional** (panel 13): milk, gun, girl, police, elevator,
+  crush, hotel, love, pistol, knife, weapon, shield.
+- **Sharknado** (panel 26): tornado (now confirmed a real standalone keyword
+  tag, not just the inferred portmanteau half), fish, dog, beach, gun, pistol,
+  animal, vehicle, car, child.
+- **Raiders of the Lost Ark** (panel 32): whip, snake, gold*, hat, horse, ship,
+  knife (*"gold" is from the older props/scenes list, not this keyword page --
+  not re-verified as a standalone tag here), truck, chase, jungle, torch,
+  mirror, canyon, desert, fire, bar, love, ritual, lecture, dress, tent,
+  island, wine, blood, warrior, escape, kiss, pistol, sword, rescue, spider,
+  basket, soldier, spirit, alcohol, car, hero, magic, weapon, mechanic, faith,
+  fiction.
+- **The Shining** (panel 33): hotel, maze*, snow, ghost, mirror, blood (*"maze"
+  itself isn't a standalone tag; the real tags are "labyrinth" and "hedge
+  maze"), bar, chase, elevator, winter, marriage, kitchen, author, knife,
+  doctor, window, door, toy, chef, escape, rescue, kiss, danger, night, gift,
+  boy, airport. Plus a separate, weaker cluster of generic content-advisory
+  words (cruel, fatal, shock, sadness, man, woman, vicious, tragic, sick,
+  weird, suffer, limit, wrong, rare, fiction) that are literal BIP39 matches
+  but read as severity/mood tagging rather than anything specific to this
+  film -- kept distinct, not treated as equally trustworthy.
+
+Not yet tested against any hypothesis or run through `oracle.py`. The combined
+space across just these 5 panels is now large (39 x 12 x 10 x 42 x ~26-41) --
+worth curating to a short list per panel (most iconic/distinctive word) before
+any brute force, rather than testing the full cross exhaustively again.
+
+## Curated top-5 per panel, 2026-08-20
+
+The full expanded space (all keyword-tag words for the 4 zero-literal keeper
+panels under the country+language-split hypothesis -- Sharknado is dropped
+under that hypothesis so doesn't matter here) came to 4,389,396,480 candidates,
+~113x the previous 38.9M run, an estimated ~26h to exhaust even at 12-worker
+speed. Per the user's explicit choice, curated each of the 5 zero-literal
+panels down to its **5 most iconic/distinctive words** -- character names,
+signature props, or single-scene objects specific to that film, not generic
+keyword-tag words shared by lots of films (e.g. "child", "police", "car").
+This is a judgment call, not a mechanical filter; reasoning per panel below.
+The excluded words are **not discarded** -- kept as a second/third-pass tier,
+same convention as the "inferior substrings" column in
+`analysis/imdb_field_audit.xlsx` (words that exist and are real BIP39 matches,
+just not promoted to the primary candidate list for this pass).
+
+- **Panel 8, The Goonies** -- top 5: **chunk** (Chunk's own nickname, the most
+  specific possible identifier), **gold** (the treasure hunt's actual object),
+  **cave** (the film's central setting), **piano** (the skeleton-organ booby
+  trap, one of the film's most memorable scenes), **skull** (skeleton imagery
+  throughout the cave sequence). Secondary tier (37): one, brand, gadget,
+  beach, rescue, legend, chase, sword, coin, toilet, bicycle, tunnel, jewel,
+  pizza, fire, sheriff, forest, child, trap, ship, pistol, arrest, organ,
+  asthma, book, knife, escape, marble, camera, kiss, thunder, rain, wish,
+  police, hidden, danger, humor.
+- **Panel 13, Leon: The Professional** -- top 5: **milk** (Leon's own iconic
+  habit, already the strongest candidate from the start), **gun** (the
+  "child with a gun" image that defines Mathilda's arc), **shield** (Mathilda
+  used as a human shield in the finale), **pistol** (Stansfield's signature
+  pill-and-pistol ritual before a kill), **crush** (the age-difference
+  relationship that is the film's central, controversial theme). Secondary
+  tier (7): girl, police, elevator, hotel, love, knife, weapon.
+- **Panel 26, Sharknado** -- top 5: **tornado** (half the title itself, and a
+  real standalone IMDb keyword tag), **fish** (sharks classified as fish is
+  literally the "sharksploitation" joke), **dog** (the widely-referenced
+  "save the dog" beat), **beach** (the film's opening/central setting),
+  **gun** (guns and improvised weapons used against the sharks throughout).
+  Secondary tier (5): pistol, animal, vehicle, car, child. Note: under the
+  currently-tested hypothesis Sharknado is a dropped intruder, so this
+  panel's word doesn't affect the derivation -- curated anyway for
+  completeness/future hypotheses.
+- **Panel 32, Raiders of the Lost Ark** -- top 5: **whip** (Indy's single
+  most iconic prop), **snake** ("why'd it have to be snakes," the snake pit
+  scene), **hat** (Indy's fedora, iconic), **spider** (the giant tarantulas
+  on the temple door in the opening sequence), **torch** (used throughout
+  the opening cave sequence). Secondary tier (37): gold, horse, ship, knife,
+  truck, chase, jungle, mirror, canyon, desert, fire, bar, love, ritual,
+  lecture, dress, tent, island, wine, blood, warrior, escape, kiss, pistol,
+  sword, rescue, basket, soldier, spirit, alcohol, car, hero, magic, weapon,
+  mechanic, faith, fiction.
+- **Panel 33, The Shining** -- top 5: **hotel** (the Overlook, the film's
+  central setting), **mirror** (the REDRUM mirror-writing scene, one of the
+  most famous shots in horror film history), **blood** (the elevator-of-blood
+  image), **ghost** (the central haunting), **door** (the "Here's Johnny!"
+  axe-through-the-door scene, the film's most quoted moment). Secondary tier
+  (22): maze, snow, bar, chase, elevator, winter, marriage, kitchen, author,
+  knife, doctor, window, toy, chef, escape, rescue, kiss, danger, night,
+  gift, boy, airport.
+
+New candidate space for the country+language-split derivation: 4,800,000
+(down from 4,389,396,480), small enough to run in-process in minutes. See
+`analysis/bruteforce_curated_top5.py` and `analysis/tested.md` for the run and
+its result.
+
+## Criterion sweep rebuilt programmatically, one field corrected, 2026-08-20
+
+Per the user's request to focus on finding the real intruder criterion, the
+whole 24-field sweep was rebuilt from scratch programmatically (not by hand)
+from `analysis/imdb_field_audit.xlsx`, since the earlier session's exact
+17-hit list was never saved to a file. This caught a real bug: the
+single-writer-credit-block field was being computed by splitting on every
+semicolon, which miscounts Scream 2's writers text ("Kevin Williamson
+(characters; written by)" -- one person, two roles, semicolon inside the
+parenthetical) as 2 writers instead of 1. Fixed, verified by hand against all
+34 rows. **Corrected count: exactly 10**, not 9 -- this is now a genuinely
+single-field intruder-criterion candidate (not an arbitrary two-field
+AND/OR), dropping: Leon: The Professional, The Visitors, Star Wars: A New
+Hope, Gravity, Sharknado, Terminator 2, Scream 2, The Matrix Reloaded,
+Ghostbusters II, The Human Centipede. Tested end to end
+(`analysis/tested.md`): **0 matches** across 480,000 candidates.
+
+Full sweep re-run with the fix: 16 pairwise AND/OR hits (down from the
+previously-recalled 17, consistent with the single-writer-block field's old
+wrong count of 9 presumably producing one extra coincidental pairwise hit
+that no longer appears) + 1 single-field hit = 17 total, matching what the
+user recalled. Full list and every hit's exact dropped-panel set in
+`analysis/tested.md`. All 15 not-yet-tested pairwise hits are queued for
+end-to-end derivation via `analysis/bruteforce_all_criterion_hits.py`
+(running in the background, ~2h, single-thread) -- see tested.md for results
+once complete.
+
+## Single definitive word per panel, all 34, 2026-08-20
+
+Per the user's request, collapsed every panel's candidate list down to
+exactly one word each (previously many panels carried 2-5 tied candidates),
+so that any future intruder-hypothesis test becomes one instant check instead
+of a combinatorial search. Rule applied: a literal whole title-word match
+beats a mere substring/fragment; among multiple whole-word matches, the most
+distinctive/iconic one for that film; for the 5 zero-literal panels, the
+already-vetted single most iconic candidate. This is a judgment call on the
+12 panels that had tied literal candidates, not a mechanical certainty --
+full reasoning per panel in `analysis/SUMMARY_FOR_EXTERNAL_AI_2026-08-20.md`.
+
+Final table (panel: word): 1 hard, 2 glory, 3 alien, 4 mad, 5 alien, 6 now,
+7 escape, 8 chunk, 9 art, 10 possible, 11 ill, 12 life, 13 milk, 14 mask,
+15 river, 16 visit, 17 orange, 18 hope, 19 gravity, 20 first, 21 solar,
+22 blade, 23 galaxy, 24 close, 25 bar, 26 tornado, 27 day, 28 cream,
+29 matrix, 30 toy, 31 ghost, 32 whip, 33 hotel, 34 human.
+
+Only "alien" repeats (panels 3 and 5, unavoidable -- the films are literally
+titled Aliens/Alien). Not yet run through the oracle as-is (34 words isn't a
+valid mnemonic length until 10 are dropped) -- this table's purpose is to
+make the next round of hypothesis testing trivial. Also written up in full,
+alongside the whole investigation, in a standalone summary document prepared
+for external review: `analysis/SUMMARY_FOR_EXTERNAL_AI_2026-08-20.md`.

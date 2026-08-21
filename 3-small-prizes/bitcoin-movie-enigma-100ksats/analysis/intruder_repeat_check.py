@@ -1,62 +1,47 @@
 #!/usr/bin/env python3
 """
 intruder_repeat_check.py -- test the "shares a director or lead actor with another
-panel" hypothesis for the 10 intruders, against the full 34-panel corpus.
+panel" hypothesis (H1) for the 10 intruders, against the full 34-panel corpus.
 
-Purpose:
-    The rules say the intruder criterion is "on IMDb, on each movie's page." Every
-    IMDb title page lists a director and a top-billed cast. This script checks
-    whether "this film's director OR top-billed actor also directs/stars in another
-    film among these same 34 panels" picks out exactly the 10 films to drop, the
-    way MPAA rating, Oscar wins, and novel adaptation (analysis/tested.md) did not.
-
-Input:
-    The DIRECTOR and LEAD_ACTOR tables below, one entry per panel, filled in from
-    each film's own IMDb/Wikipedia page (sources noted where a specific claim was
-    checked in this session; well-known credits for iconic films were not
-    separately searched).
-
-Output:
-    Which panels share a director or lead actor with another panel in this set
-    (the intruder candidates under this hypothesis), the resulting count, and
-    whether it equals 10.
+Updated 2026-08-20 for the major dataset revision (data/films.csv): with the
+corrected film list, this criterion flags 14 of 34 panels, not 10. See
+analysis/tested.md, "Major dataset revision," and analysis/leads.md for the full
+breakdown. Kept here (not deleted) as the reference computation for H1 against the
+current dataset, and as the starting point for any refined sub-criterion.
 
 Usage:
     python analysis/intruder_repeat_check.py
-
-This performs no search of its own and touches no escrow; it is arithmetic over a
-small, manually compiled table.
 """
 
 # panel: (title, director, lead_actor)
 FILMS = {
     1: ("Die Hard", "John McTiernan", "Bruce Willis"),
     2: ("Paths of Glory", "Stanley Kubrick", "Kirk Douglas"),
-    3: ("Alien", "Ridley Scott", "Sigourney Weaver"),
+    3: ("Aliens", "James Cameron", "Sigourney Weaver"),
     4: ("Mad Max", "George Miller", "Mel Gibson"),
-    5: ("Star Trek: The Motion Picture", "Robert Wise", "William Shatner"),
+    5: ("Alien", "Ridley Scott", "Sigourney Weaver"),
     6: ("Apocalypse Now", "Francis Ford Coppola", "Martin Sheen"),
     7: ("Escape from Alcatraz", "Don Siegel", "Clint Eastwood"),
-    8: ("The Goonies", "Richard Donner", "Sean Astin"),  # primary hypothesis per user, 2026-08-19; Shutter Island kept as a probability, see analysis/leads.md
-    9: ("Duel in the Sun", "King Vidor", "Jennifer Jones"),
+    8: ("The Goonies", "Richard Donner", "Sean Astin"),
+    9: ("Spartacus", "Stanley Kubrick", "Kirk Douglas"),
     10: ("Mission: Impossible", "Brian De Palma", "Tom Cruise"),
-    11: ("Ace Ventura: When Nature Calls", "Steve Oedekerk", "Jim Carrey"),
+    11: ("Godzilla", "Roland Emmerich", "Matthew Broderick"),
     12: ("Life of Pi", "Ang Lee", "Suraj Sharma"),
-    13: ("Goodfellas", "Martin Scorsese", "Ray Liotta"),
-    14: ("Eyes Wide Shut", "Stanley Kubrick", "Tom Cruise"),
+    13: ("Leon: The Professional", "Luc Besson", "Jean Reno"),
+    14: ("The Man in the Iron Mask", "Randall Wallace", "Leonardo DiCaprio"),
     15: ("The Crimson Rivers", "Mathieu Kassovitz", "Jean Reno"),
-    16: ("The 13th Warrior", "John McTiernan", "Antonio Banderas"),
+    16: ("The Visitors", "Jean-Marie Poire", "Christian Clavier"),
     17: ("A Clockwork Orange", "Stanley Kubrick", "Malcolm McDowell"),
     18: ("Star Wars: A New Hope", "George Lucas", "Mark Hamill"),
     19: ("Gravity", "Alfonso Cuaron", "Sandra Bullock"),
     20: ("First Man", "Damien Chazelle", "Ryan Gosling"),
-    21: ("Solaris", "Steven Soderbergh", "George Clooney"),  # 2002; version uncertain, see films.csv
+    21: ("Solaris", "Andrei Tarkovsky", "Donatas Banionis"),
     22: ("Blade Runner 2049", "Denis Villeneuve", "Ryan Gosling"),
-    23: ("Valerian and the City of a Thousand Planets", "Luc Besson", "Dane DeHaan"),
-    24: ("Ordinary People", "Robert Redford", "Donald Sutherland"),
+    23: ("Guardians of the Galaxy", "James Gunn", "Chris Pratt"),
+    24: ("Close Encounters of the Third Kind", "Steven Spielberg", "Richard Dreyfuss"),
     25: ("Barry Lyndon", "Stanley Kubrick", "Ryan O'Neal"),
     26: ("Sharknado", "Anthony C. Ferrante", "Ian Ziering"),
-    27: ("The Lost Boys", "Joel Schumacher", "Jason Patric"),
+    27: ("Terminator 2: Judgment Day", "James Cameron", "Arnold Schwarzenegger"),
     28: ("Scream 2", "Wes Craven", "Neve Campbell"),
     29: ("The Matrix Reloaded", "Lana Wachowski", "Keanu Reeves"),
     30: ("Toy Story", "John Lasseter", "Tom Hanks"),
@@ -100,7 +85,7 @@ def main():
     print(f"\nMatches the puzzle's required 10 intruders: {'YES' if len(flagged) == 10 else 'NO'}")
 
     keepers = sorted(set(FILMS) - flagged)
-    print(f"\n=== Remaining 24 keepers (panel order) ===")
+    print(f"\n=== Remaining keepers (panel order) ===")
     print(keepers)
 
 

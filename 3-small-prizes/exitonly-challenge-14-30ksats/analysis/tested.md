@@ -28,13 +28,52 @@ be performed without this missing input. `analyze_known_seeds.py` in this folder
 tested (against the public BIP39 test vectors, `--demo`) and ready to run the moment a
 complete solved mnemonic for either challenge becomes available from a legitimate source.
 
-## Side observation (not evidence about seed generation, logged for context)
+## 2026-08-20: pipeline rehearsal against already-spent episodes (Challenge 1, Challenge 6)
 
-Both Challenge 12 and Challenge 13's spending transactions sent their proceeds to the same
-address, `bc1qtx4fqx8nd5gqz9t83qftwqw55tmxaav7tz3xg0`. That address has received exactly 3
-incoming transactions total: the Ch12 and Ch13 sweeps, plus a third 30,000-sat sweep from a
-different address (`bc1qzlhrfaldw753q3e56edtdn048qa8gjm4pspg3s`, not yet identified) in the
-same block as the Ch12 sweep. This says something about who claims prizes in this series (one
-actor or bot appears to sweep multiple episodes in quick succession, sometimes batched in the
-same block), not about how the author generates seeds; it does not bear on the "shared
-generator" hypothesis and should not be read as evidence for or against it.
+Purpose: validate the checksum -> BIP84 derivation -> address-compare pipeline end to end
+against a real, zero-risk target before ever pointing it at Challenge 14's live escrow.
+Method: `analyze_known_seeds.py`'s sibling `practice_range.py`, which tries the single
+missing word in all 12 possible slots (not just the slot implied by the source list),
+keeping the given known words in their given relative order -- 24,576 raw candidates,
+~1,536 checksum-valid, per episode.
+
+| # | Target | Known words source | Candidates | Result |
+|---|---|---|---|---|
+| 1 | Challenge 1 escrow `bc1qnlj5s0ltkg4w3jr6f4jhd8yhr5hcpkat5fw33n` (spent 2024-09-02) | user-supplied transcription, missing-word count not officially confirmed by the video description (early template) | 1,530 checksum-valid | 0 matches |
+| 2 | Challenge 6 escrow `bc1qcfwhwa20e4jl8dj3esl9egjpxrdaty96ac079y` (spent 2024-09-01) | user-supplied transcription; missing-word count of 1 IS officially confirmed by the video's own description ("11 out of the 12 words") | 1,535 checksum-valid | 0 matches |
+
+Both runs completed in ~7.7s at ~3,190 candidates/sec, confirming the pipeline itself runs
+correctly and fast at this scale. Neither reproduced the historical answer. Since Challenge
+6's missing-word count is author-confirmed, the most likely explanations, in order, are: (a)
+the user-supplied known-word transcription contains an error for one or more words, (b) the
+known words' relative order is not actually preserved in the true mnemonic (a bigger,
+792x-permutation search this session was not authorized to run), or (c) the escrow used a
+non-canonical BIP84 account/address-index instead of `m/84'/0'/0'/0/0`. Not distinguished
+between; needs either a verified re-transcription of the source video or explicit
+authorization to widen the search before going further. This does not change anything about
+Challenge 14 itself -- it is a methodology rehearsal, not a finding about the target puzzle.
+
+## 2026-08-20: full-series destination clustering (who claims these prizes)
+
+Extended the Ch12/Ch13 destination observation below to all 14 episodes. Located every
+episode's escrow via the channel's video list, confirmed all of Challenges 1-13 are spent
+on-chain, and read each spending transaction's destination address directly (raw API JSON,
+not summarized) via `mempool.space`.
+
+| Destination address | Episodes | Notes |
+|---|---|---|
+| `bc1q9sengmvxjqdkv3qyjrr4j0ewmq949yxp2kukud` | 1, 2, 5, 7, 8, 9, 10 | exactly 7 funding transactions on this address, matching all 7 episodes; fully drained onward since |
+| `bc1qtx4fqx8nd5gqz9t83qftwqw55tmxaav7tz3xg0` | 11, 12, 13 | still holds all 97,525 sats unspent as of this check; the previously "not yet identified" third sweep in this address's history is Challenge 11's own escrow, `bc1qzlhrfaldw753q3e56edtdn048qa8gjm4pspg3s` |
+| `bc1ql58295263dfnq307ml4x99tdwgxgpxsn7zys2f` | 3, 4 | this address has 28 unrelated funding transactions and 4.4M sats of lifetime volume, i.e. an actively used general wallet, not a single-purpose sweep address |
+| `1NremNJ9zNHP4XzwHEF3BcVZuYoMnuzU3L` (legacy P2PKH) | 6 | the one episode whose proceeds did not go to a bech32 address |
+
+A `WebSearch` for both cluster addresses by exact string returned no public writeup, tool,
+or forum post naming either one. No identity or method was recoverable this way.
+
+Conclusion: at most 3-4 distinct actors/wallets account for all 13 spent episodes, with one
+wallet alone claiming 7 of the first 10. This is strong evidence the series has been resolved
+by a small number of dedicated, fast actors rather than organically by many different
+community members, and is relevant to how quickly a live episode should be expected to
+disappear once its real search space becomes tractable. It says nothing about how the author
+generates seeds and should not be read as evidence for or against the "shared generator"
+hypothesis.

@@ -32,6 +32,7 @@ list); the root `requirements.txt` just points pip at it, so there is one file t
 | `bip39_demo.py` | Generates fresh random TEST entropy, walks it through mnemonic -> seed -> BIP84 derivation -> address, printing every intermediate value. |
 | `bip39_validate.py` | Checks a phrase against the three BIP39 rules (word count, wordlist membership, checksum) and says which one failed. |
 | `benchmark.py` | Times a small (default 2,000, capped at 20,000) batch of full BIP39-to-address derivations and projects how long larger hypothetical spaces would take at that rate. Does not run those larger spaces. |
+| `benchmark_parallel.py` | Same measurement, spread across worker processes (hard-capped at 6, the machine's physical core count, not the 12 logical threads `os.cpu_count()` reports) to see what multi-core throughput actually looks like. Still capped at 20,000 candidates. |
 
 Run them with:
 

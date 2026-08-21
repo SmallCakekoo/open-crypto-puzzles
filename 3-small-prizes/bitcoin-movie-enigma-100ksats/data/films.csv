@@ -1,47 +1,78 @@
-# Film identification state for the 34 panels of the Bitcoin Movie Enigma. Last full
-# pass 2026-08-04; panels 11 and 34 updated 2026-08-19 (see analysis/tested.md).
+# Film identification state for the 34 panels of the Bitcoin Movie Enigma.
+# MAJOR REVISION 2026-08-20: panels 3, 5, 9, 11, 13, 14, 16, 23, 24, 27 corrected
+# from the user's own frame-by-frame research (watched the actual films, including
+# via non-official streams, cross-checked with other people) -- see
+# analysis/tested.md, "Major dataset revision" and analysis/leads.md for what
+# changed and why. These 10 identifications are recorded as "probable" (user's own
+# first-hand identification, not independently re-sourced by me this session)
+# except where noted; the other 24 panels are unchanged from the prior pass.
+# Also corrected in this revision: panel 25 (Barry Lyndon) "bar" is a real
+# substring (b-a-r prefix of "Barry"), previously wrongly recorded as none; panel
+# 31 (Ghostbusters II) has 2 more valid substrings (host, bus) beyond the
+# previously-recorded "ghost"; panel 33 (The Shining) "shine" is NOT a literal
+# substring of "shining" (verified: needs silent-e restoration, a different,
+# unvalidated transformation) -- corrected to none.
+# UPDATE 2026-08-20 (exhaustive substring re-check, all 2048 BIP39 words against
+# all 34 titles, single-word-boundary rule, this time run to completion instead of
+# by eye): found several literal substrings the earlier by-eye passes missed.
+# Panel 30 title corrected to Toy Story 2 (user re-identification, see
+# imdb_field_audit.xlsx and analysis/tested.md). New finds: panel 7 "cat"
+# (al-CAT-raz), panel 9 "art" (sp-ART-acus -- panel 9 was "none", now has a real
+# literal candidate for the first time), panel 22 "run" (RUN-ner), panel 23
+# "guard" (GUARD-ians), panel 27 "term" (TERM-inator), panel 29 "load"
+# (re-LOAD-ed), panel 34 "tip" (cen-TIP-ede). "two" (a real BIP39 word, spelled
+# out from the bare numeral 2 in panels 27/28/30's titles) is NOT added here --
+# the digits "t-w-o" do not literally appear in any of those titles, so per this
+# column's own literal-substring-only convention it belongs in analysis/leads.md
+# with the other non-literal candidates, not here. Two more literal
+# substrings found but NOT added as new candidates because they are an inferior
+# tier of an already-covered word (whole-word beats substring for the same title
+# word, per this project's established hierarchy): "ask" in panel 14's "Mask"
+# (already whole-word matched) and "lock" in panel 17's "Clock" (already
+# whole-word matched). Still zero literal candidate after this re-check: panels 8
+# (The Goonies), 13 (Leon: The Professional), 26 (Sharknado), 32 (Raiders of the
+# Lost Ark), 33 (The Shining) -- 5 panels, down from 6.
 # confidence: confirmed | probable | uncertain. candidate_bip39_words:
 # semicolon-separated English BIP39 words found literally inside the title, or
-# "none". All 34 panels now have an identification; panels 8, 25, 26 and 32 have no
-# literal-substring candidate (see analysis/leads.md, lead 3). Panel 20 ("First Man")
-# and panel 34 ("The Human Centipede (First Sequence)") share 2 of their 3 candidate
-# words ("first", "man"); if both panels are real (not intruders), a well-formed
-# 24-word set likely does not pick the same word for both, which favors "human" (the
-# one candidate unique to panel 34) without confirming it.
+# "none". Non-literal candidates (character names, etc.) are tracked separately in
+# analysis/leads.md and analysis/bruteforce_config.json, not in this column.
 # Sources: docs/ident_01_09.md, ident_10_18.md, ident_19_26.md, ident_27_34.md,
-# audit_identifications.md, ident_finales.md, ident_fable.md (private research notes).
+# audit_identifications.md, ident_finales.md, ident_fable.md (private research
+# notes, panels unchanged in this revision); user's own direct research 2026-08-20
+# for the 10 changed/reconfirmed panels (private, not yet independently sourced by
+# me beyond panel 16's earlier circumstantial visual check).
 panel,title,mpaa,confidence,candidate_bip39_words
 1,Die Hard,R,confirmed,hard
 2,Paths of Glory,APPROVED,confirmed,glory;path
-3,Alien,R,confirmed,alien
+3,Aliens,R,probable,alien
 4,Mad Max,R,confirmed,mad
-5,Star Trek: The Motion Picture,G,probable,motion;picture
+5,Alien,R,probable,alien
 6,Apocalypse Now,R,confirmed,now
-7,Escape from Alcatraz,PG,confirmed,escape
+7,Escape from Alcatraz,PG,confirmed,escape;cat
 8,The Goonies,PG,probable,none
-9,Duel in the Sun,APPROVED,confirmed,sun
+9,Spartacus,APPROVED,probable,art
 10,Mission: Impossible,PG-13,confirmed,miss;possible
-11,Ace Ventura: When Nature Calls,PG-13,confirmed,when;nature;call
+11,Godzilla,PG-13,probable,ill
 12,Life of Pi,PG,confirmed,life
-13,Goodfellas,R,confirmed,good
-14,Eyes Wide Shut,R,confirmed,eye;wide
+13,Leon: The Professional,R,probable,none
+14,The Man in the Iron Mask,PG-13,probable,man;iron;mask
 15,The Crimson Rivers,R,confirmed,river
-16,The 13th Warrior,R,probable,warrior
-17,A Clockwork Orange,R,confirmed,clock;orange;range;work
+16,The Visitors,PG-13,probable,visit
+17,A Clockwork Orange,R,confirmed,clock;lock;orange;range;work
 18,Star Wars: A New Hope,PG,confirmed,hope
 19,Gravity,PG-13,confirmed,gravity
 20,First Man,PG-13,probable,first;man
 21,Solaris,PG-13,probable,solar
-22,Blade Runner 2049,R,confirmed,blade
-23,Valerian and the City of a Thousand Planets,PG-13,confirmed,city;planet;sand
-24,Ordinary People,R,probable,ordinary;people
-25,Barry Lyndon,PG,confirmed,none
+22,Blade Runner 2049,R,confirmed,blade;run
+23,Guardians of the Galaxy,PG-13,probable,galaxy;guard
+24,Close Encounters of the Third Kind,PG,probable,close;kind
+25,Barry Lyndon,PG,confirmed,bar
 26,Sharknado,TV-14,probable,none
-27,The Lost Boys,R,uncertain,boy
+27,Terminator 2: Judgment Day,R,probable,day;term
 28,Scream 2,R,confirmed,cream
-29,The Matrix Reloaded,R,probable,matrix
-30,Toy Story,G,confirmed,story;toy
-31,Ghostbusters II,PG,confirmed,ghost
+29,The Matrix Reloaded,R,probable,matrix;load
+30,Toy Story 2,G,confirmed,story;toy
+31,Ghostbusters II,PG,confirmed,ghost;host;bus
 32,Raiders of the Lost Ark,PG,confirmed,none
-33,The Shining,R,confirmed,shine
-34,The Human Centipede (First Sequence),R,confirmed,human;first;man
+33,The Shining,R,confirmed,none
+34,The Human Centipede (First Sequence),R,confirmed,human;first;man;tip
