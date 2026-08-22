@@ -484,3 +484,140 @@ valid mnemonic length until 10 are dropped) -- this table's purpose is to
 make the next round of hypothesis testing trivial. Also written up in full,
 alongside the whole investigation, in a standalone summary document prepared
 for external review: `analysis/SUMMARY_FOR_EXTERNAL_AI_2026-08-20.md`.
+
+## Splice check (full squashed title) + AKA titles for the 5 zero-literal panels, 2026-08-21
+
+Per the user's concern that we've been brute-forcing intruder criteria without
+first nailing down the words themselves, did two cheap/safe (no heavy compute)
+checks instead:
+
+1. **Squashed-title splice check**: concatenated each of the 5 zero-literal
+   titles with no spaces (same method that found "soft" for Raiders earlier:
+   panel-8 "thegoonies", panel-13 "leontheprofessional", panel-26
+   "sharknado", panel-32 "raidersofthelostark", panel-33 "theshining") and
+   checked every one of the 2048 BIP39 words as a substring, crossing word
+   boundaries. **Result: only Raiders has any match ("soft", already known).
+   Goonies, Leon, Sharknado, and Shining have zero literal BIP39 substring
+   under any boundary-crossing, confirmed exhaustively, not just by the
+   earlier single-word-boundary check.** This rules out an overlooked literal
+   answer for these 4 -- if the transform really is "literal substring" for
+   every title, these 4 films' true words (if the panels are correctly
+   identified) must come from a different official title string entirely.
+
+2. **AKA (official alternate title) check**, the puzzle rules' own title text
+   doesn't specify *which* title string to use, so checked every official
+   AKA IMDb lists for the 3 panels not yet checked this way (Raiders,
+   Shining, Sharknado -- Goonies and Leon were already checked 2026-08-20,
+   no new literal word found for either):
+   - **Raiders**: English-language AKAs are "Raiders of the Lost Ark",
+     "Indiana Jones and the Raiders of the Lost Ark", and working titles
+     "Indiana Jones," "Raiders," "The Adventures of Indiana Smith." **"one"
+     is a literal substring of "Jones"** (as in "Indiana Jones") -- clean,
+     but "one" is already a Goonies candidate, so using it here too would
+     duplicate a word across two panels, which this project has flagged
+     before as a mark against a candidate, not for it. The working-title
+     splices (sand, era, head, venture, find) are weaker still and rely on
+     titles the film was never actually released under.
+   - **Shining**: English AKAs are "The Shining," "Shining," and "Stanley
+     Kubrick's 'The Shining'" (a real, distinct AKA entry on IMDb). **"brick"
+     is a literal substring of "Kubrick"** -- real per IMDb's own AKA
+     listing, but comes from the director's name, not the film's title
+     proper, which feels like a stretch relative to every other panel's
+     answer.
+   - **Sharknado**: English AKAs are "Sharknado," "Sharknado 3D," and the
+     working title "Dark Skies" (already flagged in
+     `analysis/imdb_field_audit.xlsx` as an IMDb data quirk unrelated in
+     content to this film, not a real alternate title). "Dark Skies" splices
+     to "ski" (dark-SKI-es) -- weak, and builds on a title we already believe
+     is a database error for this entry, not a genuine AKA.
+
+None of these AKA-derived words are being promoted to the primary or
+secondary candidate tier -- flagged here as found-but-weak, for the record,
+not treated as better than the existing keyword-sourced candidates (chunk,
+milk, tornado, whip, hotel and their secondary tiers). The exhaustive splice
+check (item 1) is the more solid result: it closes off "we missed an obvious
+literal match" as an explanation for these 4 panels' zero-literal status.
+
+Still genuinely open: the puzzle's own rules text just says "transform
+'somehow'" (the author's own quotation marks, see `clues/author-posts.md`)
+with zero further detail -- there is no hidden precise rule being missed in
+the author's own words, confirmed by re-reading the rules and about-page
+quotes directly. Date: 2026-08-21.
+
+## Panel 4 alternative identification considered and rejected: Going Places (1974), 2026-08-21
+
+A third party's own candidate list (source unknown, passed to the user, not
+the user's own visual identification) proposed panel 4 as **Going Places**
+(1974, tt0072353, original title "Les Valseuses") instead of **Mad Max**
+(1979). The user themselves was skeptical of this alternative but wanted it
+checked in case Mad Max was the wrong call.
+
+Checked what would follow if true, without being able to verify visually
+(no access to the actual panel still): "Going Places" does have a clean
+literal BIP39 word ("place," inside "Places," same plural-strip convention
+used elsewhere in this project) -- stronger on its own than "mad." However,
+**Going Places has zero IMDb Connections-tab links to any of the other 33
+panels** (checked live: its only connections are to unrelated media --
+Depardieu documentaries, podcasts, an unofficial remake, one spoof -- none
+overlapping this puzzle's 34-film set). Mad Max, by contrast, already has a
+real, verified connection to panel 17 (A Clockwork Orange). Swapping to
+Going Places would turn panel 4 into an 11th zero-connection panel under the
+Connections-based intruder hypothesis (the strongest hypothesis found so
+far, see "NEW CRITERION FOUND" in tested.md), breaking its clean
+"exactly 10" result.
+
+**Conclusion: rejected.** No visual evidence supports the swap, the user's
+own confidence in it was low, and the one concrete fact checkable without
+the image (Connections-tab data) argues for Mad Max being the better fit,
+not against it. Mad Max stays as the panel 4 identification. Flagging this
+here so the same third-party suggestion isn't re-investigated from scratch
+if it resurfaces. Date: 2026-08-21.
+
+## Notes from community GitHub issue #9, for reconciliation, 2026-08-21
+
+Full context and the three externally-tested criteria are in tested.md,
+"Community cross-check: GitHub issue #9..." This entry is just the
+open-questions/leads side of that same thread.
+
+- **Alternate/regional title question, raised by "couldes"**: IMDb pages
+  differ by region -- some show subtitles, some don't (e.g. "Star Wars:
+  Episode IV - A New Hope" vs plain "Star Wars," or "Solaris" with/without a
+  year disambiguator). Open question for the author: does the title-to-word
+  transform apply to a specific canonical title string, or is any
+  region/AKA variant fair game? This is directly relevant to our own
+  AKA-title exploration (leads.md, "Splice check... + AKA titles,
+  2026-08-21") -- we already tried this for the 5 zero-literal panels with
+  weak results, but haven't tried it systematically across all 34 (e.g. a
+  clean literal word hiding in a *different* region's title for an
+  otherwise-solved panel, not just the problem ones).
+- **Numeral-to-word readings, from "nosignme"**: their word list treats
+  bare digits in titles as spelled-out numbers more aggressively than we
+  have -- e.g. panel 22 (Blade Runner 2049) -> "two, zero" (from "2049"),
+  panel 27/28/30/31 -> "two" (from "2"/"II"). We had already flagged "two"
+  as a non-literal candidate for the bare-"2" titles (panels 27, 28, 30) but
+  never extended this to multi-digit years like "2049," and never tried
+  "zero" specifically. Not yet tested against any hypothesis.
+- **Community consensus panel list** (floflo777's reconciliation, referencing
+  a separate `data/films_community_issue9.csv` fork in that repo): confirms
+  our own panel 4 (Mad Max) and panel 30 (Toy Story 2) calls, and
+  independently surfaces the same ~9-panel identification-ambiguity cluster
+  (3, 5, 9, 13, 14, 16, 23, 24, 27) our own 2026-08-20 major dataset
+  revision already addressed from the user's own frame-by-frame review --
+  worth a side-by-side diff against `data/films_community_issue9.csv` if
+  that file becomes accessible, to see whether the community's frame reads
+  agree with the user's for all 9, or whether any specific panel is still a
+  live disagreement.
+- **Three externally-run criteria now also ruled out** (not run by us, GPU
+  compute reported by "timothy-barus," see tested.md for full detail):
+  shared release year, year>=2000, ten-shortest-by-runtime. Do not
+  re-attempt these -- if revisiting, the highest-value move would be
+  independently reproducing just the checksum-valid count for one of the
+  three as a spot-check of their methodology, not re-running the full
+  sweep.
+- **Our IMDb Connections hypothesis is not represented anywhere in that
+  thread** -- worth posting there, since the thread's own current
+  conclusion ("ideas on [Goonies/Leon/Sharknado's words] are worth more than
+  compute") is exactly the kind of ask our Connections angle doesn't answer
+  directly, but the *degree-0 panel list* it produces (a different 10-panel
+  split than every criterion tried there so far) is new information for
+  that effort regardless.

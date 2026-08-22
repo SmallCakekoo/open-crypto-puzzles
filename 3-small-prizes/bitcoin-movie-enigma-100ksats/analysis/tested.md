@@ -1343,3 +1343,137 @@ launching a many-hour job without checking in first. Given how much stronger
 this criterion is than anything found before it, this is considered the
 current best lead in the whole investigation, worth the larger run if the
 user wants to pursue it. Date: 2026-08-21.
+
+## Full-word-space run against the Connections-criterion hypothesis: complete, 0 matches, 2026-08-21
+
+Ran `analysis/bruteforce_connections_criterion_full.py` (8 workers, after
+starting at 10 and stepping down to 8 via 6 once the user flagged fan noise
+as a thermal-risk signal -- see chat; checkpointing added before the final
+launch so a restart would resume instead of losing progress, verified
+working with a real interrupt-and-resume smoke test first).
+
+**Completed in full: all 1,828,915,200 candidates checked, 25,641.3s (~7.1h),
+~71,300/s sustained the entire run, no crashes/interruptions. `--selftest`
+passed at start. Result: NO MATCH.**
+
+This exhausts the complete word space for the Connections-based intruder
+criterion (panels 7, 10, 12, 14, 20, 21, 22, 25, 31, 34 dropped -- the 10
+films with zero IMDb Connections-tab links to any other film in this
+34-panel set) -- every literal title-substring candidate (including full
+ties) for the 19 straightforward keeper panels, crossed with *every* sourced
+word (top-5 curated plus the full secondary tier) for the 5 zero-literal
+keeper panels (Goonies, Leon, Sharknado, Raiders, Shining). Not a sample, not
+a curated slice -- the entire space as currently sourced.
+
+This is the most thorough single-hypothesis test in the whole investigation.
+It does not disprove the Connections criterion itself (the true word for one
+of the 5 tricky panels could still be something not on either page's
+keyword/character-name list, or the 3 hub-page virtualization gaps flagged
+when this criterion was found could hide an additional edge that would
+change which 10 panels are dropped), but the "obvious, sourced" word space
+for this specific 24-panel split is now fully exhausted with a clean
+negative. Date: 2026-08-21.
+
+## BIP39 passphrase test against a curated guess list, 2026-08-21
+
+Per the user's request, tested whether a BIP39 passphrase (the optional
+"25th word" -- a separate string combined with the mnemonic via PBKDF2-HMAC-
+SHA512 to derive the seed, giving a completely different wallet per
+passphrase) could explain the negative results so far. Not an exhaustive
+search -- a passphrase can be any string, unlike the 24 words (a closed
+2048-word list) or the intruder criterion (a bounded set of IMDb fields) --
+only a curated list of 28 plausible guesses was tested (author handle/npub,
+phrases from the rules text including the author's own "IMBD" misspelling,
+the puzzle's name/domain, known dates, empty string).
+
+The single fixed-word table (24 words, one per panel, under the Connections
+hypothesis) fails the BIP39 checksum on its own -- checksum depends only on
+the 24 words, not the passphrase, so no passphrase can rescue a
+checksum-invalid combination. Widened to the 1,000,000-candidate top-5
+word space instead: scanned for checksum-valid mnemonics first (3,782 found,
+close to the expected ~1/256 of 1,000,000), then crossed each against all 28
+passphrase candidates -- 105,896 total (mnemonic, passphrase) pairs, each
+requiring a full PBKDF2 seed derivation (inherently slow by design, unlike
+plain word-checking). Ran multiprocess, 8 workers
+(`analysis/try_passphrases.py --workers 8`). `--selftest` passed. **Result:
+NO MATCH across all 105,896 combinations.**
+
+This only clears these 28 specific passphrase guesses against the top-5
+Connections-hypothesis word space -- it does not rule out a passphrase in
+general (unbounded space), a passphrase combined with the full secondary-tier
+word space, or a passphrase combined with a different intruder hypothesis
+entirely. Date: 2026-08-21.
+
+## Community cross-check: GitHub issue #9, three more criteria tested externally, 2026-08-21
+
+A public GitHub issue (#9) on the puzzle's community/upstream repo has an
+independent effort running in parallel, with several contributors
+(deviceio121, floflo777 [repo owner], SmallCakekoo [this user's own GitHub
+handle -- they already posted there independently, see below], couldes,
+timothy-barus, nosignme). Pasted into this session by the user 2026-08-21;
+not re-verified by fetching the issue directly, recorded as reported.
+
+**Panel identification convergence** (cross-checks our own data, not
+duplicated work):
+- Panel 4 = Mad Max: the user (as "SmallCakekoo") independently caught and
+  posted the same "Going Places" red herring raised earlier in this session
+  (see leads.md, "Panel 4 alternative identification considered and
+  rejected") and reached the same conclusion externally, citing an IMDb
+  media-viewer URL as proof. Cross-confirms our own rejection of that swap.
+- Panel 30 = Toy Story 2 (not Toy Story): independently caught by "couldes"
+  in the community thread too, same correction already applied on our side
+  2026-08-20 ("Gaps closed" entry above).
+- Community consensus (floflo777's summary): panels 3, 5, 9, 13, 14, 16, 23,
+  24, 27 remain genuinely unreconciled between different contributors' frame
+  identifications -- this overlaps exactly with our own "major dataset
+  revision" panel list (2026-08-20), meaning the same identification
+  ambiguity independently surfaced in two separate efforts.
+
+**Three new intruder-criterion hypotheses, tested externally with GPU
+compute** (by "timothy-barus," not run by us -- recorded as their reported
+result, not independently reproduced):
+1. "Shares a release year with another film in the set" -> drops
+   {4,5,6,7,11,14,18,19,24,26}. 96,636,764,160 raw candidates,
+   377,480,432 checksum-valid, **0 matches**.
+2. "Released 2000 or later" -> drops {12,15,19,20,21,22,23,26,29,34}.
+   72,477,573,120 raw, 283,125,641 checksum-valid, **0 matches**.
+3. "The ten shortest films by runtime" (a rank-based selection, not a fixed
+   threshold -- structurally different from every criterion we tried, since
+   a top-N-by-rank rule always yields exactly N by construction rather than
+   landing on 10 by coincidence) -> drops {2,4,15,16,19,21,26,30,31,34}.
+   144,955,146,240 raw, 566,220,239 checksum-valid, **0 matches**.
+   Total across the three: 1,226,826,312 checksum-valid seeds tested, 0
+   matches. Reported methodology: BIP84 `m/84'/0'/0'/0/{0,1,2}` only (not
+   the wider BIP49/44 + raw-path sweep `tools/oracle.py` covers), ~130,000
+   seeds/s on a rented GPU, gated by reproducing a CPU reference byte for
+   byte, recovering 3 planted witness mnemonics, and checking the
+   checksum-valid rate landed within 0.6 sigma of the expected 1/256 -- a
+   real validation methodology, given credibility here though not
+   independently reproduced by us. Two further candidate rules ("pre-1980,
+   the ten longest" and one other) were identified but not run: they leave
+   Sharknado wordless too (3 unknowns instead of 2), and a 3-wildcard sweep
+   at 2048^3 is out of reach even on their hardware.
+
+**Word-table discrepancy worth flagging back to the thread**: timothy-barus's
+table lists **"shine"** as panel 33's (The Shining) BIP39 word. This
+contradicts our own explicit, already-documented finding (2026-08-20 dataset
+revision entry above): "shine" is **not** a literal substring of "shining"
+(s-h-i-n-**i**-n-g vs s-h-i-n-**e** -- the 5th letter differs, no valid
+match under simple substring or plural/suffix-strip rules). Likely an error
+in their table, not a rule we're missing. Their own conclusion text ("The
+Goonies, Leon and Sharknado give nothing") is consistent with treating
+Shining as solved via "shine," so this may be silently propping up their
+"only 3 unknowns" framing.
+
+**Independent corroboration of our own AKA-title finding**: contributor
+"nosignme" proposes "ski" for panel 26 (Sharknado), via the film's "Dark
+Skies" alternate title -- the exact same find this session made independently
+2026-08-21 (see leads.md, "Splice check... + AKA titles," which also flagged
+it as weak since "Dark Skies" is itself a known IMDb-database quirk, not a
+real alternate title for this film). Two independent efforts landing on the
+same word via the same path is worth noting either way.
+
+**Not mentioned anywhere in the community thread**: the IMDb Connections
+self-reference criterion (this session's strongest hypothesis, "NEW
+CRITERION FOUND" entry above). Appears to be a genuinely novel contribution
+relative to the public effort. Date: 2026-08-21.
