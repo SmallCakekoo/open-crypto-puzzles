@@ -9,9 +9,13 @@ private key read directly out of the image, not a mnemonic or a keystore file. T
 printed in clear text inside the file's metadata is a confirmed decoy. I measured the image's
 geometry precisely (12 buildings, 1 large sailboat, 5 small sails) and its metadata (a
 create-before-modify timestamp anomaly shared only with a sibling puzzle), and tested close to
-1,000 direct encodings of both against the target address, all negative. The exact pixel-level
-encoding the author used is still unknown, and no certified oracle exists for this puzzle since
-no known-answer candidate is available to test the harness against.
+1,000 direct encodings of both against the target address, all negative. I also ran a systematic
+bit-plane/LSB sweep of the grayscale and alpha channels (every bit plane, scan order, and
+packing, whole image and the sailboat region), another 110 candidates, and a generic pixel-marker
+anomaly scan (residual against each pixel's 8 neighbors, swept across all thresholds), another
+84 candidates: also all negative. The exact pixel-level encoding the author used is still
+unknown, and no certified oracle exists for this puzzle since no known-answer candidate is
+available to test the harness against.
 
 ## At a glance
 
@@ -120,22 +124,32 @@ Full ledger in [analysis/tested.md](analysis/tested.md). Summary:
 | Metadata date anomaly (create/modify timestamps, several encodings and combinations) | dozens of encodings times 6 hash functions | address comparison | 0 match, 0 near-miss | uncertified | 2026-06-13 |
 | Sibling-puzzle-#9-calibrated alpha channel carrier hypotheses | several hundred combinations | address comparison, calibrated against #9's real address | 0 match, 0 near-miss, and does not reproduce #9's known answer either | yes, on the #9 positive control only | 2026-06-13 |
 | Container-structure myths (embedded executable or filesystem) | full file | binwalk, chunk inspection | refuted: clean valid PNG | yes | 2026-06-13 |
+| Systematic bit-plane/LSB scan (grayscale + alpha, full image + sailboat bbox, 8 bit planes, 4 scan orders, 2 packings, 2/3/4 bits/pixel) | 110 candidates | address comparison (`tools/lsb_scan.py`) | 0 match, 0 near-miss | uncertified | 2026-08-21 |
+| Sparse/localized pixel-marker scan (median-of-8-neighbors residual outliers, both channels, thresholds near a bit-budget count, 4 orderings, up to 6 encodings) | 84 candidates | address comparison (`tools/anomaly_scan.py`) | 0 match, 0 near-miss | uncertified | 2026-08-21 |
 
-Cumulative: on the order of 1,000 candidates tested across geometry and metadata families,
-0 matches, 0 near-misses under the `ff21` address-prefix check.
+Cumulative: on the order of 1,214 candidates tested across geometry, metadata, bit-plane,
+marker-scan, and ink-density families, 0 matches, 0 near-misses under the address-prefix check.
+Direct visual inspection of the buildings, sailboat, and small sails at 2-3x zoom found no
+embedded text or legible pattern in the hatching.
 
 ## Open leads, ranked
 
-1. **A systematic LSB scan of the continuous grayscale and alpha channels** (hours). Every
-   candidate so far reads geometry or metadata as a whole value; a bit-level scan with a tool
-   built for this (`zsteg -a`, `stegoveritas`) has not yet been run to exhaustion. Confirmed if
-   an extracted 64-hex string derives the target exactly; killed once the sweep is exhaustive
-   across bit order and bit width with no match.
-2. **Join the community Telegram group and search first-hand for the promised hint** (needs a
+1. **[CLOSED, negative] A systematic LSB scan of the continuous grayscale and alpha channels.**
+   Closed 2026-08-21 (`tools/lsb_scan.py`): every bit plane, scan order, and packing over both
+   channels, full image and the sailboat region, 0 matches. Rules out whole-channel, single-
+   stream readings; does not rule out a sparse or localized encoding.
+2. **[CLOSED, negative, generic-outlier method only] A sparse/localized pixel-marker scan.**
+   Closed 2026-08-21 for the generic method (`tools/anomaly_scan.py`): swept residual-vs-neighbors
+   thresholds looking for an outlier count near a bit-budget number, 0 matches, and no threshold
+   landed exactly on 256/128/86/64 outliers (the grayscale channel is too texturally noisy for a
+   generic "stands out" filter to isolate a marker set). Still open: marker pixels chosen by a
+   rule a generic filter can't discover, e.g. specific hand-identified visual features (window
+   positions, mast tips) or a fixed coordinate list needing an external seed.
+3. **Join the community Telegram group and search first-hand for the promised hint** (needs a
    person). I already searched the full archived window (November 2021 to May 2026) and found
    nothing; what remains untested is anything from before the archive starts or outside its
    coverage.
-3. **Puzzle #9's real solving method, if it ever surfaces** (needs new information). #9 was
+4. **Puzzle #9's real solving method, if it ever surfaces** (needs new information). #9 was
    swept in 2020 by an anonymous solver who never published a method; a future write-up would
    give this folder its first certified, puzzle-specific oracle.
 
@@ -152,6 +166,8 @@ Full notes: [analysis/leads.md](analysis/leads.md).
 | `analysis/leads.md` | full notes behind the 3 ranked leads |
 | `images/01-annotated-geometry.png` | the annotated geometry figure |
 | `tools/fig_geometry.py` | generates images/01-annotated-geometry.png from data/geometry.json |
+| `tools/lsb_scan.py` | the systematic bit-plane/LSB scan against the escrow address |
+| `tools/anomaly_scan.py` | the sparse/localized pixel-marker (neighbor-residual outlier) scan against the escrow address |
 
 ## Sources
 

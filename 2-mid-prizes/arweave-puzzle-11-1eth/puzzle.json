@@ -44,12 +44,13 @@
     "certified_against": "the derivation primitives (SHA-256, Keccak-256, secp256k1, EIP-55) are checked against public test vectors, but no known-answer image-to-key pair exists for this specific puzzle, so no oracle is shipped"
   },
   "difficulty_left": "insight",
-  "difficulty_note": "the target format (raw private key, not a mnemonic) and the decoy (the address printed in the file's tEXt chunk) are both confirmed; close to 1,000 direct encodings of the measured geometry and the metadata anomaly have been tested, all negative; the exact pixel-level encoding is not yet known and no certified oracle exists to test one against, so the missing piece is either an unrecovered insight into the encoding or the never-delivered author hint",
-  "tested_total": { "candidates": 1000, "families": 4, "certified": false },
+  "difficulty_note": "the target format (raw private key, not a mnemonic) and the decoy (the address printed in the file's tEXt chunk) are both confirmed; on the order of 1,200 direct encodings of the measured geometry, the metadata anomaly, a systematic whole-channel bit-plane/LSB sweep, and a generic sparse pixel-marker (neighbor-residual outlier) scan have been tested, all negative; the exact pixel-level encoding is not yet known and no certified oracle exists to test one against, so the missing piece is either a marker scheme chosen by a rule a generic filter can't discover (specific hand-identified visual features or an external seed), an unrecovered insight, or the never-delivered author hint",
+  "tested_total": { "candidates": 1214, "families": 7, "certified": false },
   "leads": [
-    { "rank": 1, "title": "systematic LSB scan of the continuous grayscale and alpha channels", "cost": "hours", "status": "open" },
-    { "rank": 2, "title": "join the community Telegram group and search first-hand for the promised hint", "cost": "needs-a-person", "status": "open" },
-    { "rank": 3, "title": "puzzle #9's real solving method, if it ever surfaces", "cost": "needs-new-information", "status": "open" }
+    { "rank": 1, "title": "systematic LSB scan of the continuous grayscale and alpha channels", "cost": "hours", "status": "closed-negative" },
+    { "rank": 2, "title": "sparse/localized pixel-marker scan as opposed to a whole-channel stream", "cost": "hours", "status": "closed-negative-for-generic-outlier-method" },
+    { "rank": 3, "title": "join the community Telegram group and search first-hand for the promised hint", "cost": "needs-a-person", "status": "open" },
+    { "rank": 4, "title": "puzzle #9's real solving method, if it ever surfaces", "cost": "needs-new-information", "status": "open" }
   ],
   "solutions": [],
   "artifacts": [
@@ -61,5 +62,5 @@
     { "title": "HomelessPhD, AR_Puzzles community repository, PZL11", "url": "https://github.com/HomelessPhD/AR_Puzzles/tree/main/PZL11", "date": "2026-08-16", "archived": null }
   ],
   "third_party_material": "the puzzle image in clues/ is the author's own published puzzle material, stored on Arweave; the author's quotes in clues/author-posts.md are reproduced from a community repository that itself mirrors the author's Twitter replies; no other third-party material is included",
-  "last_updated": "2026-08-16"
+  "last_updated": "2026-08-21"
 }
