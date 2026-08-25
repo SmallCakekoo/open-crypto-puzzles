@@ -339,6 +339,9 @@ cannot attach to this puzzle at all: [analysis/leads.md](analysis/leads.md).
 | `tools/oracle.py` | candidate checker, certified against the author's own vector; includes the Stage One case-flip helper |
 | `tools/fastderive.py` | fast reimplementation of the same transform (hashlib + coincurve, no bip_utils) for large sweeps; self-tests against the same published vector and cross-checks against `oracle.py`'s library when available |
 | `tools/bip39-english.txt` | the standard BIP39 English wordlist (public domain, sha256 `2f5eed53...`), so `fastderive.py` needs no wordlist dependency |
+| `tools/secp256k1_pure.py` | stdlib-only secp256k1, used automatically when coincurve is unavailable (a locked-down machine); verified against coincurve on random keys, 11x slower |
+| `tools/ripemd160_pure.py` | stdlib-only RIPEMD-160, used automatically when hashlib lacks it (OpenSSL 3 legacy-provider builds); passes the official test vectors |
+| `tools/bench_scale.py` | measures this machine's real parallel throughput and converts it into wall times, since PBKDF2 scaling is much worse than core count suggests |
 | `tools/fetch_source.py` | fetches the Wattpad source chapter into a local, gitignored cache, refusing to write it unless the 273-paragraph / 6-NBSP forensic audit still holds |
 | `tools/sweep.py` | parallel sweep engine: contiguous-range, app-byte-matrix, bounded 2-edit, and transposition modes, each witness-verified |
 | `tools/README-sweep.md` | what a compute machine needs and the order to run the sweeps in |

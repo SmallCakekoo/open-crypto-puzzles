@@ -22,7 +22,9 @@ Transform (identical to oracle.py):
          -> BIP32 m/44'/0'/0'/0/i -> compressed pubkey -> HASH160
          -> compare against the target HASH160 set.
 
-Dependencies: stdlib + coincurve. The BIP39 English wordlist ships alongside
+Dependencies: stdlib only. coincurve is used when present and a pure-Python
+secp256k1 is used when it is not; likewise RIPEMD-160 falls back to
+ripemd160_pure.py when hashlib lacks it. The BIP39 English wordlist ships alongside
 as bip39-english.txt (public domain, part of the BIP39 spec; sha256
 2f5eed53a4727b4bf8880d8f3f199efc90e58503646d9ff8eff3a2ed3b24dbda).
 """
@@ -33,7 +35,12 @@ import hashlib
 import hmac
 import os
 
-from coincurve import PrivateKey
+try:
+    from coincurve import PrivateKey  # libsecp256k1; ~40x faster
+    EC_BACKEND = "coincurve"
+except ImportError:  # locked-down machine with no wheel and no compiler
+    from secp256k1_pure import PrivateKey
+    EC_BACKEND = "secp256k1_pure (slow fallback -- install coincurve if you can)"
 
 SECP256K1_N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
 
@@ -233,6 +240,8 @@ def selftest() -> bool:
 if __name__ == "__main__":
     import sys
 
+    print(f"EC backend:       {EC_BACKEND}")
+    print(f"RIPEMD-160:       {'hashlib' if _have_ripemd160() else 'ripemd160_pure (fallback)'}")
     if len(sys.argv) > 1 and sys.argv[1] == "--selftest":
         sys.exit(0 if selftest() else 1)
     if len(sys.argv) > 1 and sys.argv[1] == "--bench":

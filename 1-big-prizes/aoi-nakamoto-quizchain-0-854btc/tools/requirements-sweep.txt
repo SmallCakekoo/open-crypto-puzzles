@@ -1,2 +1,9 @@
-# Minimum needed to run tools/sweep.py on the lab machines.
+# Optional but strongly recommended: libsecp256k1 bindings.
+# Without it, tools/secp256k1_pure.py takes over automatically -- correct, but
+# measured 11x slower (36 vs 403 candidates/sec/core).
 coincurve>=18.0.0
+
+# Optional: enables the independent cross-check in fastderive.py --selftest,
+# by letting it compare against the same library tools/oracle.py uses.
+# bip_utils>=2.9.0
+# pynacl>=1.5.0
