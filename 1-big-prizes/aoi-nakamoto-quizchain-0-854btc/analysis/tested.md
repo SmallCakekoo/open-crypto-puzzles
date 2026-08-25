@@ -104,6 +104,40 @@ day, all real fetched data, all negative on both addresses.
 Total across both research phases: approximately 291 million candidates
 against Real Big Block, all negative.
 
+### 2026-08-25 session: contiguous-range and transposition sweeps (tools/sweep.py)
+
+First runs of `tools/sweep.py`, a new parallel engine built on
+`tools/fastderive.py` (the same transform as `oracle.py`, reimplemented on
+hashlib + coincurve and self-certified against the author's own published
+vector). Source text fetched fresh by `tools/fetch_source.py`, which
+re-validated the forensic audit on the spot: exactly 273 paragraphs and exactly
+6 U+00A0, no other non-ASCII.
+
+Both runs are **witness-verified**: a candidate drawn from the sweep's own
+enumeration had its HASH160 planted in the target set before the run, and both
+runs recovered it. A run that fails to recover its witness exits non-zero and
+its negative is discarded rather than recorded.
+
+| Hypothesis family | Candidates | Result |
+|---|---|---|
+| **Every contiguous paragraph range of the chapter** (all 37,401 of them, i.e. every `paragraphs[s:e]`), x both confirmed separators x 3 case-rule variants (none, ITASM, flip-all), UTF-8, NBSP kept, no trailing bytes | 224,406 | 0 match, witness recovered |
+| Transposition: reversed order, reversed-within-halves, halves swapped, interleaved halves, evens-then-odds, odds-then-evens; each x the full serialization matrix (4 separators x 3 transforms x 3 NBSP modes x 4 trailing-byte variants x BOM/no-BOM x per-paragraph rstrip x UTF-8/ISO-8859-1) | 6,912 | 0 match, witness recovered |
+
+The contiguous-range row closes what had been the largest coverage gap in this
+ledger: prior work tested **12 hand-picked sections**, and this tests **all
+37,401 contiguous ranges** under the confirmed formatting. Any hypothesis of
+the form "she hashed some contiguous stretch of the chapter, unmodified or
+under the ITASM rule, with a confirmed separator" is now exhausted for UTF-8
+with clean bytes. What remains open within that shape is the cross product with
+the app-behaviour matrix (`--mode ranges --profile full`, 43,085,952
+candidates) and non-contiguous selections.
+
+The transposition row closes lead 6 in `analysis/leads.md` at full serialization
+depth; order-changing transforms had never been tested at all before.
+
+Running total: approximately 291.2 million candidates against Real Big Block,
+all negative.
+
 ## Quizchain2 Block 76 (0.077 BTC) — solved and swept by a reader 2026-08-17
 
 Kept for historical reference; no longer part of the live prize. The solution

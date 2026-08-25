@@ -1,0 +1,2 @@
+# Minimum needed to run tools/sweep.py on the lab machines.
+coincurve>=18.0.0

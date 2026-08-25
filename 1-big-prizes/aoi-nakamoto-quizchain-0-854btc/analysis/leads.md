@@ -133,6 +133,147 @@ under their respective confirmed separators.
 What would kill it: not applicable until lead 1 produces a candidate to test.
 Cost: minutes, contingent on lead 1.
 
+## 4. Speculative: the "-gry" wordplay behind the r/Grycoin name
+
+**Status: speculative, no primary-source support, and partly contradicted by
+the source text itself. Recorded for completeness, not recommended for
+compute.**
+
+Observation: the author named her own subreddit **r/Grycoin**, and in the Real
+Big Block Discussion thread she wrote "I hope you are not anGRY any more"
+(`data/realbigblock_full_thread_recovered.md:121`), capitalising G-R-Y inside
+"angry" in a way that is hard to read as a typo. "-gry" is a well-known English
+word riddle ("angry and hungry end in -gry; name the third such word"), famous
+precisely for having no agreed answer — the trick lives in how the question is
+worded, not in the vocabulary. That shape (a question whose real content is its
+phrasing) matches this author's demonstrated style: she uses Atbash in the
+series' introduction post, and the confirmed Stage One rule is itself a
+first-letter wordplay (ITASM).
+
+Evidence against, found while investigating it:
+
+- The substring "gry" does **not** appear anywhere in the confirmed Real Big
+  Block source chapter (part 720888559), in any case, including inside
+  "angry"/"hungry". A selector or transform keyed on it has nothing to bind to.
+- The "GRYcoin project" discussed at length in the same thread is a
+  climate/carbon-credit coin proposal raised by a *commenter*
+  (`data/realbigblock_full_thread_recovered.md:103`), not by the author; her
+  "anGRY" line is a reply to that commenter's criticism, so the capitalisation
+  reads at least as plausibly as a pun on their topic as on a cipher.
+- "Grycoin" was already tested as a paragraph-selector word
+  (`analysis/tested.md:21`), 0 match.
+- No post in the 33-part Wattpad story or the recovered Reddit history
+  explains the name "Grycoin" at all.
+
+What would confirm it: a primary source in which the author connects "gry" to
+the puzzle mechanism rather than to the coin proposal or to the joke.
+What would kill it: nothing cleanly; it is already weak enough that absence of
+further evidence is the expected outcome.
+Cost: near zero to test the riddle's stock answers ("language", "say",
+"agree") as selector words or TOMI strings, if only to close it out. Not worth
+more than that.
+
+## 5. Forensic: identify the hashing tool the author actually used
+
+**This is a stronger lead than 4 and is newly opened.** Part 14 of the Wattpad
+story ("Mistakes", part id 724275249, 2019-04-25) states verbatim: "The next
+trap was unintended change of hashing algo to MD5. That happened because I
+restarted my tablet and the hashing tool I use switched back to the default
+(MD5)", and then: "I avoid this by the simple strategy of changing all hashes
+to MD5, the default of the hashing tool."
+
+Two things follow, one reassuring and one actionable:
+
+- **MD5 is positively confirmed for Real Big Block**, not merely assumed. She
+  standardised on MD5 in April 2019 precisely to eliminate algorithm drift;
+  Real Big Block is July 2019, well after. This closes "maybe it was SHA-256"
+  as a branch without needing to test it.
+- **She hashed by pasting a string into a GUI hashing app on a tablet**, not
+  via a scripted pipeline. That is the single most likely origin of the
+  byte-level mismatch that has defeated approximately 291 million candidates
+  so far. Mobile hashing apps differ in ways that are invisible to the user
+  and fatal to a hash: some append a trailing newline to a multi-line text
+  field, some normalise pasted CRLF to LF regardless of what the clipboard
+  held, some hash the field as UTF-8 with BOM, some trim leading/trailing
+  whitespace silently. Her asciivalue.com checks
+  (`data/realbigblock_full_thread_recovered.md:168`) prove what the *clipboard*
+  contained; they prove nothing about what the *hashing app* did with it
+  afterwards.
+
+This reframes the problem usefully: the remaining unknown may not be "which
+paragraphs" (lead 1) at all, but "what did her app silently do to the bytes",
+which is a much smaller and more structured space than a free selector search.
+
+What would confirm it: identifying a 2019-era tablet hashing app with MD5 as
+its default algorithm whose text-field handling, applied to the whole chapter
+under `\r\n\r\n`, reproduces either target address.
+What would kill it: exhausting the plausible app-behaviour transforms (trailing
+newline, LF normalisation, BOM, whitespace trim, and their pairwise
+combinations) against the whole chapter and the major sections with no match.
+Note that several of these individually are already covered by the
+edit-distance-1 sweep in lead 2; the untested part is their **combinations**,
+which is also exactly the bounded 2-character space lead 2 proposes.
+Cost: hours. The transform set is small and enumerable, unlike lead 1.
+
+## 6. Untested transform family: transposition
+
+Every test recorded in `analysis/tested.md` preserves the chapter's paragraph
+order, selecting or transforming paragraphs in place. Order-changing transforms
+(reversed paragraph order, section reordering, interleaving two halves) have
+never been tried. This has no primary-source support and is listed only because
+it is a genuine structural gap in the tested space rather than a new idea about
+the author's intent — the same standard under which lead 4 is marked
+speculative. Cheap to add to any existing sweep.
+
+## Cryptographic techniques triaged against this puzzle
+
+Recorded so future work does not re-derive it. Real Big Block is a
+**single-preimage search**: find the exact byte string whose MD5 seeds a BIP39
+mnemonic deriving a known P2PKH address. There is no protocol, no key exchange,
+no ciphertext under an unknown key, and no signature to verify, so most of the
+standard cryptography curriculum has no attachment point here.
+
+Applicable, and either already used or worth using:
+
+- **Substitution ciphers.** Confirmed in-universe: the author solves her own
+  introduction block with Atbash ("apply the well known Atbash method",
+  r/Grycoin `bry4fw`). Atbash/ROT-n over selector words is cheap and untried.
+- **Transposition.** See lead 6 above.
+- **Hash functions.** MD5 confirmed (lead 5). The 128-bit output matching BIP39
+  128-bit entropy exactly is why the series uses it.
+- **Brute force and dictionary attacks.** Already the main instrument;
+  approximately 291 million candidates, all negative.
+- **Side-channel attack, in the broad sense.** The productive work in the last
+  two sessions has been exactly this: attacking the author's operational
+  environment (Wattpad metadata, `modifyDate`, draft parts, her tablet's
+  hashing app) rather than the hash. Lead 5 is a side-channel lead.
+
+Not applicable, with the reason:
+
+- **DES/3DES, AES, block-cipher modes (CBC/CTR/GCM), key management** — nothing
+  in the puzzle is encrypted under a key; there is no ciphertext.
+- **RSA, Diffie-Hellman, ECC as attack surfaces** — no key exchange occurs.
+  secp256k1 is the substrate BIP44 derives over, not a target.
+- **Digital signatures, certificates, PKI, certificate authorities** — nothing
+  is signed or attested.
+- **HMAC, password storage, nonces** — HMAC-SHA512 appears inside BIP32 key
+  derivation, but as a fixed, already-certified step, not an attackable one.
+- **HTTPS/TLS, SSH, VPN, web application cryptography, secure key exchange** —
+  no live protocol is involved; the puzzle is static text and a static address.
+- **Replay and man-in-the-middle attacks** — no session or channel exists.
+- **Hash collisions** — a collision needs a known target digest to collide
+  with. The target digest here is unknown (only the resulting *address* is
+  known), so collision techniques cannot be pointed at anything. A preimage is
+  required, and MD5 has no practical preimage break.
+- **Post-quantum cryptography** — worth stating precisely, because it is the
+  one branch people assume is a backdoor: `14zMkTgaVXJcxdh4JdWi29MLRR44iUSG9W`
+  is an **unspent P2PKH** address, so it publishes only HASH160 of the public
+  key, never the public key itself. Shor's algorithm attacks a public key, so
+  even a working quantum computer has nothing to attack until the address is
+  spent. This branch is closed by construction, not by difficulty.
+- **Zero-knowledge proofs** — a tool for proving knowledge without revealing
+  it; it cannot produce knowledge nobody has.
+
 ---
 
 ## Historical: Block 76 leads (solved 2026-08-17, no longer pursued)

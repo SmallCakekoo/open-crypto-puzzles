@@ -230,7 +230,14 @@ Reproduced 2026-08-22.
    `wayback/available` API on both URLs); archive.today is rate-limited (HTTP
    429) on every attempt, consistent across two independent research sessions;
    whether this reflects a platform-level exclusion is unconfirmed.
-9. AoiNakamoto's complete Reddit post history (100 submissions, confirmed
+9. MD5 is positively confirmed as Real Big Block's hash algorithm, not merely
+   assumed: in "Mistakes" (Wattpad part 14, 2019-04-25) the author describes
+   accidentally hashing two early blocks with MD5 after her tablet's hashing
+   tool reverted to its default, and states she then standardised every hash
+   on MD5 to prevent recurrence — three months before Real Big Block. The same
+   passage establishes that she hashed by pasting text into a GUI app on a
+   tablet, not through a script (see lead 5).
+10. AoiNakamoto's complete Reddit post history (100 submissions, confirmed
    complete via pagination) contains no solution disclosure at any point after
    2019-08-04, including no post around the two expiry conditions she set for
    disclosure (Mayer Multiple hitting $100/mbtc, or Tanabata 2022, both since
@@ -253,12 +260,17 @@ Full ledger in [analysis/tested.md](analysis/tested.md). Summary:
 | RBB: reversed case-flip direction (ITASM flipped, others unchanged) against the real Stage One calibration text | 1 | same | 0 match (confirms the original direction is correct) | yes | 2026-08-22 |
 | RBB: positional paragraph selection (every Nth paragraph, N=2/3/4/7, all offsets), read from the author's own "every 7th word" technique in the Wattpad story | 384 | same | 0 match | yes | 2026-08-22 |
 | RBB: full edit-distance-1 sweep (deletion, insertion, substitution) on the whole chapter, both confirmed separators, unmodified and ITASM bases, both addresses, parallelized 7-11 cores | 18,840,792 | same | 0 match | yes, first exhaustive edit-distance-1 sweep under the confirmed separators | 2026-08-22 |
+| RBB: **every contiguous paragraph range of the chapter** (all 37,401), both confirmed separators, 3 case-rule variants | 224,406 | same | 0 match | yes, planted witness recovered | 2026-08-25 |
+| RBB: transposition (reversed, halves swapped, interleaved, evens/odds), each across the full serialization matrix | 6,912 | same | 0 match | yes, planted witness recovered | 2026-08-25 |
 
 Cumulative: approximately 272 million candidates tested against Real Big Block
 by the original private research, plus approximately 18.8 million additional,
 encoding- and separator-aware candidates tested against real fetched source
-data in the 2026-08-22 session (approximately 291 million total), all
-negative. Full scope notes, including
+data in the 2026-08-22 session, plus 231,318 witness-verified candidates in the
+2026-08-25 session (approximately 291.2 million total), all negative. The
+2026-08-25 rows are small in count but close two structural gaps: **all 37,401
+contiguous paragraph ranges** (prior work tested 12 hand-picked sections) and
+order-changing transforms (never tested before). Full scope notes, including
 which rows are complete sweeps versus targeted tests, are in
 `analysis/tested.md`.
 
@@ -286,7 +298,26 @@ which rows are complete sweeps versus targeted tests, are in
    candidate; recorded as a method to apply once one hit is found, to
    independently validate it against the "twist removed" description.
 
-Full notes: [analysis/leads.md](analysis/leads.md).
+4. **The "-gry" wordplay behind the r/Grycoin name** (speculative, low
+   priority). The author named her subreddit Grycoin and wrote "I hope you are
+   not anGRY any more"; "-gry" is a well-known answerless English word riddle
+   whose trick is its phrasing, matching her Atbash/ITASM style. Weakened by
+   the finding that "gry" appears nowhere in the confirmed source chapter, and
+   that the "GRYcoin project" in the same thread is a commenter's climate-coin
+   proposal, not hers. Cheap to close out; not worth compute beyond that.
+5. **Identify the tablet hashing app she actually used** (strongest of the new
+   leads). "Mistakes" (Wattpad part 14) confirms she pasted strings into a GUI
+   hashing app on a tablet whose default was MD5 — which positively confirms
+   MD5 for Real Big Block, and opens the possibility that the unexplained
+   byte-level mismatch comes from that app's silent text handling (trailing
+   newline, CRLF-to-LF normalisation, BOM, whitespace trim) rather than from
+   paragraph selection. Her asciivalue.com checks prove what the clipboard
+   held, not what the app did with it.
+6. **Transposition transforms** (structural gap). Every test to date preserves
+   paragraph order; order-changing transforms have never been tried.
+
+Full notes, including a triage of which cryptographic techniques can and
+cannot attach to this puzzle at all: [analysis/leads.md](analysis/leads.md).
 
 ## Files in this folder
 
@@ -306,6 +337,11 @@ Full notes: [analysis/leads.md](analysis/leads.md).
 | `images/01-pipeline-derivation.svg` | the MD5-to-address derivation pipeline diagram |
 | `images/02-structure-blocks.svg` | the Quizchain series structure, colored by claim status |
 | `tools/oracle.py` | candidate checker, certified against the author's own vector; includes the Stage One case-flip helper |
+| `tools/fastderive.py` | fast reimplementation of the same transform (hashlib + coincurve, no bip_utils) for large sweeps; self-tests against the same published vector and cross-checks against `oracle.py`'s library when available |
+| `tools/bip39-english.txt` | the standard BIP39 English wordlist (public domain, sha256 `2f5eed53...`), so `fastderive.py` needs no wordlist dependency |
+| `tools/fetch_source.py` | fetches the Wattpad source chapter into a local, gitignored cache, refusing to write it unless the 273-paragraph / 6-NBSP forensic audit still holds |
+| `tools/sweep.py` | parallel sweep engine: contiguous-range, app-byte-matrix, bounded 2-edit, and transposition modes, each witness-verified |
+| `tools/README-sweep.md` | what a compute machine needs and the order to run the sweeps in |
 | `tools/fig_pipeline.py` | generates images/01-pipeline-derivation.svg from data/pipeline-stages.json |
 | `tools/fig_blocks.py` | generates images/02-structure-blocks.svg from data/blocks-structure.json |
 

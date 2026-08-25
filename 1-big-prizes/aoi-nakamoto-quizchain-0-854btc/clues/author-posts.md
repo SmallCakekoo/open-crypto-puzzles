@@ -109,6 +109,22 @@ problem if you just copypaste everything in the Question from this Reddit
 post... with no spaces or line breaks before or after that included in the
 hash."
 
+## Wattpad profile (wattpad.com/user/AoiNakamoto)
+
+Bio: "Born to publish one story." Joined 2019-04-04. 1 published story ("Second",
+20.2K reads, 19 votes, 33 comments), 0 reading lists, 14 followers. Consistent
+with her disappearing after October 2019 without further activity: the account
+was used for exactly one purpose and nothing else.
+
+## Twitter handle, confirmed
+
+https://www.reddit.com/r/Grycoin/comments/bry4fw/ ("Quizchain Introduction")
+
+Her own introduction post states her solving-progress documentation is
+"available at my Twitter feed @NakamotoAoi." This is a primary-source-confirmed
+handle, not a guess; the account itself was not independently located/verified
+in this session (X/Twitter fetches for it returned HTTP 402, paywalled).
+
 ## The Wattpad chapter
 
 https://www.wattpad.com/720888559-second
