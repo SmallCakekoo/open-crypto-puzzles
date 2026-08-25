@@ -5,19 +5,25 @@ oracle.py -- candidate checker for the Bitcoin Movie Enigma puzzle.
 Purpose:
     The puzzle's own rules say the wallet is restored from a 24-word BIP39 mnemonic,
     obtained by dropping 10 "intruder" words from a 34-word sequence (one word per
-    movie panel, in panel order). The author does not state the derivation path, so
-    this oracle checks a 24-word candidate against BIP84, BIP49 and BIP44 (2
-    accounts, 3 address indices each) plus 3 raw derivation paths some simple
-    wallets use. This is a verifier, not a search tool: it checks the 24-word
-    candidate you give it, it does not generate the C(34,10) ways to pick it.
+    movie panel, in panel order). The author does not state the derivation path,
+    account, or address index, so this oracle checks a 24-word candidate against
+    BIP84, BIP49 and BIP44 (5 accounts, 10 address indices each, both the
+    external and internal/change chains -- widened 2026-08-24 from the original
+    2 accounts x 3 indices, external chain only, after an extended negative
+    result across every other tested hypothesis made "we're checking too narrow
+    a set of derivation paths" worth ruling out too) plus 3 raw derivation paths
+    some simple wallets use. This is a verifier, not a search tool: it checks the
+    24-word candidate you give it, it does not generate the C(34,10) ways to pick
+    it.
+
+    Widening the path coverage makes each check() call slower (153 addresses
+    derived per candidate now, vs. 21 before, roughly 7x) -- see git history for
+    the narrower 2-account/3-index/external-only version if reverting.
 
     To search which 10 of 34 known words to drop, generate the 24-word reductions
-    yourself (Python's itertools.combinations) and pipe them through --stdin. At
-    about 10 ms per candidate (measured with this tool, bip_utils only, no
-    accelerated secp256k1 backend), the puzzle's own arithmetic bound of about
-    512,000 checksum-valid candidates out of C(34,10) = 131,128,140 raw drops costs
-    about 85 minutes end to end on one machine. That bound only applies once all 34
-    words and their order are known, which is not yet the case for this puzzle.
+    yourself (Python's itertools.combinations) and pipe them through --stdin. That
+    bound only applies once all 34 words and their order are known, which is not
+    yet the case for this puzzle.
 
 Usage:
     python3 tools/oracle.py --selftest                # must print SELFTEST OK
@@ -66,11 +72,18 @@ SELFTEST_24_GOOD = ("abandon " * 23 + "art").strip()
 SELFTEST_24_BAD = ("abandon " * 23 + "about").strip()  # wrong checksum for 24 words
 
 
+ACCOUNTS = 5   # widened 2026-08-24 from 2 -- the author never states an account number
+INDICES = 10   # widened 2026-08-24 from 3 -- the author never states an address index
+INCLUDE_INTERNAL_CHAIN = True  # also check the internal/change chain (CHAIN_INT), not just external
+
+
 def addresses(mnemonic: str, passphrase: str = "") -> dict[str, str]:
-    """Every plausible address for a mnemonic: BIP84/49/44, 2 accounts x 3 indices,
-    plus 3 raw paths some simple wallets use. The author does not state a path."""
+    """Every plausible address for a mnemonic: BIP84/49/44, ACCOUNTS accounts x
+    INDICES indices each, external and internal chains, plus 3 raw paths some
+    simple wallets use. The author does not state a path, account, or index."""
     seed = Bip39SeedGenerator(mnemonic).Generate(passphrase)
     out = {}
+    changes = (Bip44Changes.CHAIN_EXT, Bip44Changes.CHAIN_INT) if INCLUDE_INTERNAL_CHAIN else (Bip44Changes.CHAIN_EXT,)
     for name, cls, coin in (
         ("bip84", Bip84, Bip84Coins.BITCOIN),
         ("bip49", Bip49, Bip49Coins.BITCOIN),
@@ -78,13 +91,14 @@ def addresses(mnemonic: str, passphrase: str = "") -> dict[str, str]:
     ):
         try:
             ctx = cls.FromSeed(seed, coin)
-            for acct in range(2):
-                for i in range(3):
-                    node = (
-                        ctx.Purpose().Coin().Account(acct)
-                        .Change(Bip44Changes.CHAIN_EXT).AddressIndex(i)
-                    )
-                    out[f"{name} account {acct} index {i}"] = node.PublicKey().ToAddress()
+            for acct in range(ACCOUNTS):
+                acct_ctx = ctx.Purpose().Coin().Account(acct)
+                for change in changes:
+                    change_ctx = acct_ctx.Change(change)
+                    for i in range(INDICES):
+                        node = change_ctx.AddressIndex(i)
+                        chain_label = "ext" if change == Bip44Changes.CHAIN_EXT else "int"
+                        out[f"{name} account {acct} {chain_label} index {i}"] = node.PublicKey().ToAddress()
         except Exception:  # noqa: BLE001
             pass
     try:
@@ -111,13 +125,13 @@ def check(mnemonic: str) -> tuple[bool, str | None, str | None]:
 def selftest() -> bool:
     ok = True
 
-    addr = addresses(SELFTEST_12).get("bip84 account 0 index 0")
+    addr = addresses(SELFTEST_12).get("bip84 account 0 ext index 0")
     found = addr == SELFTEST_12_ADDRESS
     print(f"public BIP84 test vector (12 words) -> {SELFTEST_12_ADDRESS}: {'OK' if found else 'FAIL'}")
     ok = ok and found
 
     valid_24 = Bip39MnemonicValidator().IsValid(SELFTEST_24_GOOD)
-    addr24 = addresses(SELFTEST_24_GOOD).get("bip84 account 0 index 0")
+    addr24 = addresses(SELFTEST_24_GOOD).get("bip84 account 0 ext index 0")
     found24 = valid_24 and bool(addr24)
     print(f"24-word chain derives a non-empty address: {'OK' if found24 else 'FAIL'}")
     ok = ok and found24

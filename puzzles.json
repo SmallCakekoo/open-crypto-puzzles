@@ -37,22 +37,32 @@
       },
       "chain": "bitcoin",
       "prize": {
-        "amount": 0.854,
+        "amount": 0.777,
         "asset": "BTC",
-        "usd_estimate": 53802,
+        "usd_estimate": 48951,
         "usd_snapshot": "2026-08-16",
-        "note": "two lots: 0.777 BTC at 14zMkTgaVXJcxdh4JdWi29MLRR44iUSG9W (Real Big Block, stage 2) and 0.077 BTC at 13Cv6SXUnzGDT8JHqzzJ8xMPtsSdhJA4wd (Quizchain2 Block 76); both are the last 2 unclaimed of approximately 90 blocks the author published and funded herself between April and October 2019"
+        "note": "Block 76 (0.077 BTC) was solved and swept by a reader on 2026-08-17, solution never disclosed; only Real Big Block (0.777 BTC) remains open"
       },
       "addresses": [
         {
           "address": "14zMkTgaVXJcxdh4JdWi29MLRR44iUSG9W",
           "chain": "bitcoin",
           "role": "escrow",
-          "label": "Real Big Block, stage 2",
+          "label": "Real Big Block, current",
           "explorer": "https://mempool.space/address/14zMkTgaVXJcxdh4JdWi29MLRR44iUSG9W",
           "expected": "77700000 sats",
-          "verified_on": "2026-08-16",
+          "verified_on": "2026-08-22",
           "verified_state": "funded-unspent"
+        },
+        {
+          "address": "1EFojcAo2vbhRGCGCa7q8Wwvzss28mhQYC",
+          "chain": "bitcoin",
+          "role": "escrow",
+          "label": "Real Big Block, superseded pre-rehash address; funded 2019-07-24 from a single-\\r\\n hash, swept back by the author before the 2019-07-30 rehash; not part of the live prize but a differential-testing constraint",
+          "explorer": "https://mempool.space/address/1EFojcAo2vbhRGCGCa7q8Wwvzss28mhQYC",
+          "expected": "n/a",
+          "verified_on": "2026-08-22",
+          "verified_state": "swept"
         },
         {
           "address": "13Cv6SXUnzGDT8JHqzzJ8xMPtsSdhJA4wd",
@@ -61,8 +71,8 @@
           "label": "Quizchain2 Block 76",
           "explorer": "https://mempool.space/address/13Cv6SXUnzGDT8JHqzzJ8xMPtsSdhJA4wd",
           "expected": "7700000 sats",
-          "verified_on": "2026-08-16",
-          "verified_state": "funded-unspent"
+          "verified_on": "2026-08-22",
+          "verified_state": "swept"
         },
         {
           "address": "19TbyN5KCg1Lg7qHwezifsLVcdSa2Rj5KN",
@@ -71,7 +81,7 @@
           "label": "Real Big Block, stage 1 (certification reference, solved by a third party in 2019, not part of the live prize)",
           "explorer": "https://mempool.space/address/19TbyN5KCg1Lg7qHwezifsLVcdSa2Rj5KN",
           "expected": "n/a",
-          "verified_on": "2026-08-16",
+          "verified_on": "2026-08-22",
           "verified_state": "swept"
         }
       ],
@@ -79,49 +89,37 @@
         "bip39-seed",
         "word-selection"
       ],
-      "target_format": "source text (candidate answer); MD5 of its UTF-8 bytes as 128-bit entropy; BIP39 mnemonic; BIP44 m/44'/0'/0'/0/i for i = 0 to 5; P2PKH address",
+      "target_format": "source text (candidate answer); MD5 of its exact bytes as 128-bit entropy; BIP39 mnemonic; BIP44 m/44'/0'/0'/0/i for i = 0 to 5; P2PKH address",
       "derivation": {
-        "summary": "candidate text to MD5 (128-bit entropy) to BIP39 mnemonic to BIP44 m/44'/0'/0'/0/i to P2PKH address, compared against both open escrows",
+        "summary": "candidate text to MD5 (128-bit entropy) to BIP39 mnemonic to BIP44 m/44'/0'/0'/0/i to P2PKH address, compared against the open escrow (and, for calibration, the superseded and Stage One addresses)",
         "oracle": "tools/oracle.py",
         "oracle_certified": true,
-        "certified_against": "the author's own published calibration vector (entropy 2941774a2abec9f30c7d6777d1d53d91 to WIF L5Z66qPm... at BIP44 index 1), self-contained and exact; the case-flip rule and Block 76 prefix filter are certified separately with a synthetic example and a community-found candidate pair; full reproduction of the solved sibling lot Block 77 Stage One needs Hal Finney's bitcointalk post text, which this repository does not ship (third-party content), but which anyone can supply themselves to apply_stage_one_rule()"
+        "certified_against": "the author's own published calibration vector (entropy 2941774a2abec9f30c7d6777d1d53d91 to WIF L5Z66qPm... at BIP44 index 1), self-contained and exact; full reproduction of the solved sibling lot Block 77 Stage One needs Hal Finney's bitcointalk post text, which this repository does not ship (third-party content), but which anyone can supply themselves to apply_stage_one_rule(); independently confirmed against MD5 9dd2efb9bc976c2095bd534d7b8d431c, cross-checked against upstream GitHub issue #1 and the author's own 'copypasted' MD5-prefix comment"
       },
       "difficulty_left": "external-info",
-      "difficulty_note": "Real Big Block: the transform and the case-flip rule are confirmed exactly on a solved sibling lot; what is missing is the precise source text the author hashed on 2019-07-30, most likely the 2019 browser-rendered copy of a Wattpad chapter rather than today's API storage, which has been normalized; approximately 272 million candidate paragraph selections and edits tested, 0 match. Block 76: a community-found candidate pair satisfies both published MD5-prefix hints but no standard derivation of it reaches the address; roughly 78 million scripted derivations plus tens of thousands of thematic word-transform candidates tested, 0 match; the block may be a short human-reasoned wordplay riddle rather than a search problem, or may be misconfigured",
+      "difficulty_note": "The source text (a 273-paragraph Wattpad chapter, part of a 34-part story), the case-flip mechanism (confirmed by the chapter's own narrative text, not just by address match), and both historical paragraph-separator byte sequences (\\r\\n superseded, \\r\\n\\r\\n current, both from direct author statements) are all confirmed. What is missing is which paragraphs are actually hashed, and whether the case-flip transform is reused at all or was one of the 'twists' the author removed. Approximately 272 million candidates from the original private research plus roughly 2,100 additional encoding- and separator-aware candidates against real fetched source data, all negative.",
       "tested_total": {
-        "candidates": 350000000,
-        "families": 21,
+        "candidates": 350002100,
+        "families": 30,
         "certified": true
       },
       "leads": [
         {
           "rank": 1,
-          "title": "reconstruct the 2019 browser-copy rendering of the Wattpad chapter",
-          "cost": "hours",
+          "title": "identify which paragraphs of the Second chapter are hashed, and whether the case-flip transform applies at all",
+          "cost": "open-ended",
           "status": "open"
         },
         {
           "rank": 2,
-          "title": "read the 27 posts and comments between the rehash and the shutdown",
-          "cost": "about an hour",
+          "title": "a bounded 2-character-edit sweep on the whole chapter under the two confirmed separators",
+          "cost": "hours on a rented GPU",
           "status": "open"
         },
         {
           "rank": 3,
-          "title": "a bounded 2-character-edit sweep on the strongest base texts",
-          "cost": "about an hour on a rented GPU",
-          "status": "open"
-        },
-        {
-          "rank": 4,
-          "title": "identify what 76 indexes for Block 76",
-          "cost": "minutes per candidate corpus",
-          "status": "open"
-        },
-        {
-          "rank": 5,
-          "title": "a short, human-reasoned answer to change to / from change to",
-          "cost": "minutes per candidate",
+          "title": "differential validation against the superseded address once any candidate transform is found",
+          "cost": "minutes, contingent on lead 1",
           "status": "open"
         }
       ],
@@ -135,33 +133,51 @@
           "archived": null
         },
         {
-          "title": "Quizchain2 Block 76",
-          "url": "https://www.reddit.com/r/Grycoin/comments/cgcv9i/77_mbtc_quizchain2_block_76/",
+          "title": "Real Big Block original announcement (Quizchain last block)",
+          "url": "https://www.reddit.com/r/Grycoin/comments/cgkpbb/",
           "date": "2019-07-22",
           "archived": null
         },
         {
-          "title": "Real Big Block Discussion",
+          "title": "Real Big Block Discussion (fully recovered, 33 comments)",
           "url": "https://www.reddit.com/r/Grycoin/comments/chn8un/real_big_block_discussion/",
           "date": "2019-07-25",
           "archived": null
         },
         {
-          "title": "Second, Wattpad chapter by AoiNakamoto",
+          "title": "Grycoin Block 2 (author's worked example for the format of both phases of block 77)",
+          "url": "https://www.reddit.com/r/Grycoin/comments/cleczc/",
+          "date": "2019-08-03",
+          "archived": null
+        },
+        {
+          "title": "Second, Wattpad chapter by AoiNakamoto (part 2 of 34)",
           "url": "https://www.wattpad.com/720888559-second",
           "date": "2019-07-23",
           "archived": null
         },
         {
-          "title": "Real Big Block escrow funding transaction",
+          "title": "GitHub issue #1, upstream repository (Stage One MD5 and reimplementation gotchas)",
+          "url": "https://github.com/floflo777/open-crypto-puzzles/issues/1",
+          "date": "2026-08-18",
+          "archived": null
+        },
+        {
+          "title": "Real Big Block escrow funding transaction (current)",
           "url": "https://mempool.space/tx/a1916e7ed9eac3fcc56a55056328cb09d06925e2694f2e6720de12b228514d1f",
           "date": "2019-07-30",
           "archived": null
         },
         {
-          "title": "Block 76 escrow funding transaction",
-          "url": "https://mempool.space/tx/979670f3d1d4134e7989ed6f4a4370362e15c101711c93675790cf0751c8dbd4",
-          "date": "2019-07-22",
+          "title": "Real Big Block escrow funding transaction (superseded)",
+          "url": "https://mempool.space/tx/499bcd420c7f662d2513b440aedd29c4fa829d6c9edb90dfc545e9305466d49f",
+          "date": "2019-07-24",
+          "archived": null
+        },
+        {
+          "title": "Block 76 solving transaction",
+          "url": "https://mempool.space/tx/2e271ac2f63f488cd14112bceeed56f159ecd98cb3ce753f08e2d94bb62714a3",
+          "date": "2026-08-17",
           "archived": null
         },
         {
@@ -171,8 +187,8 @@
           "archived": null
         }
       ],
-      "third_party_material": "no book, chapter text, forum dump, or other bulk third-party material is included; the Wattpad chapter (the author's own fiction) and Hal Finney's bitcointalk post (third-party historical content) are both referenced by URL only, never reproduced; quotes in clues/author-posts.md are short excerpts from the puzzle author's own public Reddit posts",
-      "last_updated": "2026-08-16",
+      "third_party_material": "no book, chapter text, forum dump, or other bulk third-party material is included; the Wattpad chapter (the author's own fiction) and Hal Finney's bitcointalk post (third-party historical content) are both referenced by URL only, never reproduced in bulk; short excerpts in clues/author-posts.md and data/ are from the puzzle author's own public Reddit posts",
+      "last_updated": "2026-08-22",
       "folder": "1-big-prizes/aoi-nakamoto-quizchain-0-854btc"
     },
     {

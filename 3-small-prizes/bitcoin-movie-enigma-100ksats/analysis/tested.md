@@ -1477,3 +1477,150 @@ same word via the same path is worth noting either way.
 self-reference criterion (this session's strongest hypothesis, "NEW
 CRITERION FOUND" entry above). Appears to be a genuinely novel contribution
 relative to the public effort. Date: 2026-08-21.
+
+## Literal + one sourced reference word per panel, under the Connections hypothesis: 0 matches, 2026-08-21
+
+Per the user's request, built a bounded candidate table for the 24 keeper
+panels under the Connections intruder hypothesis (dropped: 7, 10, 12, 14,
+20, 21, 22, 25, 31, 34): each panel's literal title substring(s) plus one
+additional "reference" word meant to capture what the film is actually
+about (prompted directly by a community-issue critique -- see "Community
+cross-check: GitHub issue #9" above -- arguing thematic words like "lizard"
+for Godzilla deserve consideration alongside literal ones like "ill").
+
+Sourcing status, stated plainly: the reference words for panels 8, 13, 26,
+32, 33 are the same ones already sourced from real IMDb keywords/reviews/AKA
+titles earlier in this investigation. The reference words for the other 19
+panels (tower, trial, marine, fuel, chest, jungle, arena, lizard, mountain,
+time, prison, force, orbit, raccoon, tower again, metal, mask, machine,
+cowboy) are the assistant's own thematic judgment calls, checked only for
+BIP39 wordlist membership, NOT verified against each film's actual IMDb
+keyword page the way the established 5 were. Flagged as weaker evidence
+throughout.
+
+Full table and per-panel candidate counts in chat (2026-08-21). Total space:
+286,654,464 candidates. Ran multiprocess, 6 workers (user was concurrently
+using the machine for Photoshop and video, so kept to 6 instead of 8-10 for
+headroom; 6 workers still reached ~68,000-72,000/s, close to the 8-10-worker
+rate seen in earlier runs, suggesting the bottleneck isn't purely
+core-bound). Checkpointing enabled (`analysis/bruteforce_literal_plus_reference.py`,
+same mechanism as the Connections full-space run) though not needed this
+time -- ran start to finish without interruption.
+
+**Result: NO MATCH across all 286,654,464 combinations.** `--selftest`
+passed, 4184.5s (~1h10m) total. This clears the specific "literal + one
+thematic reference word" table as drafted -- it does not clear thematic
+words in general (only the ones on that specific list), and 19 of the 24
+panels' reference words are still IMDb-keyword-unverified, so a genuine
+miss there remains a live possibility distinct from "thematic words don't
+work." Date: 2026-08-21.
+
+## Literal + reference word, single-writer-credit hypothesis: 0 matches, 2026-08-24
+
+Same "literal title substring(s) + one thematic reference word" approach as
+the Connections-hypothesis run above, applied to the other hypothesis the
+user picked: single-writer-credit-block (dropped: 13, 16, 18, 19, 26, 27,
+28, 29, 31, 34). Candidate table and sourcing-confidence caveats (5 panels'
+words independently IMDb-sourced; the rest are thematic judgment calls,
+BIP39-checked but not IMDb-keyword-verified) match the Connections run;
+full table in `analysis/bruteforce_writer_literal_plus_reference.py`.
+
+Total space: 1,289,945,088 candidates. Ran multiprocess, 10 workers,
+checkpointing enabled. `--selftest` passed.
+
+Operational note: the machine went to sleep for an extended period (multiple
+days) partway through this run despite being plugged in -- Windows sleep
+was not disabled beforehand. The background process was suspended, not
+killed, and resumed correctly on wake with no lost progress (checkpoint
+mechanism wasn't even needed here, the process itself survived the sleep).
+Real throughput before and after the sleep gap was consistent
+(~85,000-92,000/s); only the script's own cumulative-average-since-start
+rate readout was skewed by the wall-clock gap, recovering over the
+following ~30-40 minutes of real runtime as the average caught up. Power
+settings were changed afterward (`powercfg /change standby-timeout-ac 0`)
+to prevent recurrence on future long runs.
+
+**Result: NO MATCH across all 1,289,945,088 combinations**, 33,528.7s of
+actual runtime (~9.3h, spread over a longer wall-clock window due to the
+sleep interruption). Same caveat as the Connections-hypothesis run: this
+clears the specific candidate table as drafted, not thematic words in
+general -- most of the 24 panels' reference words are still
+IMDb-keyword-unverified. Date: 2026-08-24.
+
+## Literal + reference word, single-country+single-language hypothesis: 0 matches, 2026-08-24
+
+Third and final planned run of the "literal title substring(s) + one
+thematic reference word" approach, this time against the original leading
+hypothesis (single country of origin AND single language; dropped: 4, 7, 9,
+15, 18, 24, 26, 28, 30, 31). Candidate table in
+`analysis/bruteforce_country_lang_literal_plus_reference.py`, same
+sourcing-confidence split as the other two runs (panels 8, 13, 32, 33
+IMDb-sourced; the rest thematic judgment calls checked only for BIP39
+membership).
+
+Total space: 2,149,908,480 candidates. Ran multiprocess, 10 workers,
+checkpointing enabled (not needed this run -- machine stayed awake
+throughout after `powercfg /change standby-timeout-ac 0` was applied
+following the previous run's sleep interruption). `--selftest` passed.
+Sustained ~82,700/s the entire run, no interruptions.
+
+**Result: NO MATCH across all 2,149,908,480 combinations**, 25,978.0s
+(~7.2h). Same caveat as the other two literal-plus-reference runs: clears
+this specific candidate table, not thematic words in general.
+
+**This closes out all three hypotheses the user chose to test with the
+literal+reference approach** (Connections, single-writer-credit,
+country+language) -- combined with everything else in this file, every
+promising intruder criterion identified so far has now been tested with
+both the narrow (literal-only / top-5-keyword) and the widened
+(literal+thematic-reference) word spaces, all with 0 matches. Date:
+2026-08-24.
+
+## Word-table audit: no errors found, 2026-08-24
+
+Per the user's request to sanity-check the shared 34-word candidate table
+before trusting further billions of candidates against it, independently
+re-derived every literal substring for all 34 titles from scratch (not by
+eye, programmatically against the real 2048-word BIP39 list) and cross-checked
+three things: (1) every word recorded in `data/films.csv` is a real BIP39
+word, (2) every one of those words genuinely appears as a substring of some
+title-word (not a transcription error), (3) the single-fixed-word table
+reused across every large brute-force script in this session matches either
+`data/films.csv` (for the 29 literal panels) or a properly-sourced non-literal
+word (for the 5 zero-literal panels), never anything invented mid-script.
+
+**Result: no errors.** One informational, already-known non-issue: "ask" is
+a real extra substring inside panel 14's "Mask" not recorded in films.csv,
+correctly excluded per this project's established whole-word-beats-substring
+hierarchy (already documented). This rules out "a silent typo in the shared
+word table" as an explanation for the long string of 0-match results across
+this investigation's several-billion-candidate history. Date: 2026-08-24.
+
+## Oracle derivation path coverage widened, re-running the Connections literal+reference space, 2026-08-24
+
+The one assumption never questioned across ~6 billion tested candidates:
+`tools/oracle.py` only checked 2 accounts x 3 address indices (external
+chain only) for each of BIP84/49/44, plus 3 raw paths -- 21 addresses per
+candidate. If the real wallet uses a different account or a higher address
+index, no amount of correct words or correct intruder criterion would ever
+have found it.
+
+**Widened `tools/oracle.py` itself** (the canonical, documented tool, not a
+one-off fork) to 5 accounts x 10 indices x both external and internal/change
+chains per BIP84/49/44 -- 303 addresses per candidate now, ~14.4x more.
+`--selftest` re-verified passing after the change (key format for the
+addresses dict changed to include the chain label, e.g. "bip84 account 0 ext
+index 0"; selftest's lookups updated to match). README.md's documented
+derivation-coverage claim updated to match.
+
+Measured impact on throughput: a realistic mixed sample (mostly
+checksum-invalid candidates, as any real sweep is) drops from ~12,000/s to
+**~7,900/s single-threaded** -- much less than the naive 14.4x, because
+`check()` rejects checksum-invalid candidates (the vast majority, 255/256)
+before ever calling the now-more-expensive `addresses()`. Only the
+checksum-valid ~1/256 pays the full new cost.
+
+Re-running the Connections-hypothesis literal+reference space (286,654,464
+candidates, previously 0 matches under the narrower oracle -- see "Literal +
+one sourced reference word per panel... 2026-08-21") against the widened
+oracle, 10 workers. In progress; result to follow. Date: 2026-08-24.

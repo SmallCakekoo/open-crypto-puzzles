@@ -1,100 +1,153 @@
 # Open leads, full notes
 
-Ranked summary is in the README. This file has the reasoning behind the ranking.
+Ranked summary is in the README. This file has the reasoning behind the
+ranking. Block 76 was solved and swept by a reader on 2026-08-17 (solution
+never disclosed); its leads (formerly ranked 4-5) are kept at the bottom for
+historical record only and are no longer being pursued.
 
-## 1. Reconstruct the 2019 browser-copy rendering of the Wattpad chapter
+## 1. Identify which paragraphs of the "Second" chapter are hashed, and whether the case-flip transform applies at all
 
-The author states she typed the chapter with a blank line between paragraphs
-("two line breaks... one 13 and one 10 for each"), but the chapter's current
-storage (fetched through Wattpad's API, `modifyDate` 2019-07-23, matching the
-2019-07-30 funding of the current escrow) contains no blank paragraphs at all:
-Wattpad's storage format normalizes them away. What she actually hashed was most
-likely whatever her browser produced when she selected and copied the rendered
-page in 2019, not the raw API storage read today. A first attempt at simulating
-this (Chromium's `selection.toString` and `innerText` rendering rules) is
-included in the "simulated browser copy" row of `analysis/tested.md`, but it
-used only one rendering assumption; the actual 2019 Wattpad reader page layout
-(paragraph spacing, non-breaking spaces around punctuation, title block) has not
-been reconstructed and tested as its own base text.
+This is now the sole remaining unknown for Real Big Block. What is confirmed,
+as of the 2026-08-22 investigation: the source (part 720888559 of the 34-part
+"Second" Wattpad story, confirmed by the original announcement post's own
+"Question: Final version of the second chapter of Wattpad story"); the
+case-flip mechanism as a general technique (stated directly in the chapter's
+own text, paragraph 227: "The letters I, T, A, S, and M as first letters of
+each paragraph of this post" — not researcher-inferred); and both historical
+paragraph separators (`\r\n` for the superseded escrow, `\r\n\r\n` for the
+current one, both from direct, unambiguous author statements in the fully
+recovered Real Big Block Discussion thread, `data/realbigblock_full_thread_recovered.md`).
 
-What would confirm it: rendering `data/chapitre_second_page.html` the way a 2019
-browser would have displayed it, extracting the resulting paragraph text, and
-running it (with the certified case-flip rule applied to the same candidate
-paragraph groups already tested) through `tools/oracle.py`.
-What would kill it: a faithful reconstruction still not matching after the
-already-tested paragraph-selection hypotheses are re-applied to it.
-Cost: hours, mostly in getting the 2019 rendering right; the derivation itself is
-seconds per candidate.
+What is not confirmed: which paragraphs of the 273-paragraph chapter actually
+enter the hash, or whether the ITASM-style transform is reused at all for this
+second stage (as opposed to being one of the "twists" the author says she
+removed between the superseded and current versions — "I wanted to remove one
+of the twists I had. The block is now slightly easier", `data/realbigblock_original_announcement.md`).
 
-## 2. Read the 27 posts and comments between the rehash and the shutdown
+Exhaustively tested against both the current and superseded addresses, with
+both confirmed separators, UTF-8 and ISO-8859-1 encoding, and 3 NBSP-handling
+modes, all negative (see `analysis/tested.md` for exact candidate counts):
 
-The author rehashed and refunded the Real Big Block on 2019-07-30, then stopped
-posting shortly after. The 27 posts and comments she made between 2019-07-30 and
-2019-08-04 have been read once for an explicit "twist" statement, but not
-re-read systematically against the current, narrower list of untested paragraph
-combinations.
+- Whole chapter and 12 precisely-bounded chapter sections, unmodified and with
+  the ITASM case-flip rule (both literal-first-character and
+  first-alphabetic-character variants).
+- ITASM-only selection, non-ITASM-only selection (drop-not-flip, i.e. keep
+  only the matching paragraphs and discard the rest, preserving order), both
+  with and without also applying the case-flip to the kept paragraphs.
+- Individual single-letter selectors (I-only, T-only, A-only, S-only,
+  M-only), paragraphs containing the word "sign"/"signs", and selection
+  restricted to the thematically closest section ("The Satoshi Code",
+  paragraphs 174-245).
+- Header/title-paragraph inclusion vs. exclusion, per-paragraph and
+  whole-document trimming, crossed with the above.
+- The reversed case-flip direction (ITASM-initial paragraphs flipped, others
+  unchanged) against the real Stage One calibration text specifically, to
+  settle an apparent contradiction with the author's own Grycoin Block 2
+  worked example: the reversed direction does **not** reproduce the Stage One
+  address; the original direction (ITASM unchanged, others flipped) does,
+  exactly. Grycoin Block 2's prose is confirmed imprecise even about its own
+  real text (it describes a real paragraph's transformation but gets the
+  paragraph's actual last letter wrong), so it is treated as a loose teaching
+  aid, not a literal spec, and ground truth is trusted over it.
 
-What would confirm it: a stated detail (an extra modification, a further
-paragraph, a corrected count) that, applied to the certified rule and re-tested,
-matches the address.
-What would kill it: a full re-read producing no new candidate paragraph or rule
-variant beyond what `analysis/tested.md` already covers.
-Cost: an hour of reading.
+A full byte-level forensic audit found the source text unusually clean:
+exactly 6 non-breaking spaces (U+00A0) and no other non-ASCII content anywhere
+in 273 paragraphs; no BOM; NFC/NFD/raw are byte-identical (nothing
+decomposable exists in the text); the independently fetched rendered Wattpad
+page and the API text agree exactly (0 differences) for their overlapping
+paragraphs. This substantially narrows, without eliminating, "wrong bytes" as
+an explanation for the negative results.
 
-## 3. Two-character edits on the strongest base texts
+**Update 2026-08-22: all 33 parts of the "Second" Wattpad story have now been
+read in full** (previously only 4 had been). No part states a Real Big Block
+selection or transformation rule explicitly. One technique the author
+demonstrates elsewhere in the story — "every 7th word, first letter" (part
+18, "Quizchain as a Password Manager") — was translated to paragraph
+granularity and tested as a positional selector (every Nth paragraph, N =
+2/3/4/7, all offsets, with and without the case-flip transform): 0 match.
+This closes the most textually-motivated remaining selection idea found in
+the full book; no further selector candidate has primary-source support at
+this time.
 
-The single-character-edit sweep (266,038,400 candidates, `analysis/tested.md`)
-covers every one-character difference from 40 base texts and is exhaustive for
-that distance. It does not cover 2-character differences, which would catch a
-base text that is off by, for example, one inserted invisible character AND one
-capitalization slip. A 2-character sweep restricted to the small set of NBSP and
-line-ending pairs (rather than all positions) is a bounded space, not a full
-40-base x 2-character search.
+What would confirm this lead: a selector that is independently justified by a
+specific sentence in a primary source (the chapter, the Reddit discussion, or
+the two consolidated draft parts — see `data/wattpad_story_structure.md`),
+not merely one that happens to produce the correct address, and that
+reproduces either target address.
+What would kill it, in the useful sense: nothing kills this lead outright, in
+the same way lead 5 below never had a clean exhaustion condition — the
+letter/selector space is large and only sparsely evidence-backed, so absence
+of a hit does not prove absence of a valid rule.
+Cost: open-ended; each individual evidence-backed selector is minutes to test
+once defined, but defining a new one requires primary-source justification,
+not brute force.
 
-What would confirm it: a match within the bounded 2-character space.
-What would kill it: exhausting that bounded space with 0 match; the full,
-unbounded 2-character space is not proposed here, since its cost is
-disproportionate without a narrower reason to expect the answer lives there.
-Cost: on the order of an hour on a rented GPU for the bounded version described
-above; the private research folder priced this at roughly 45 minutes per base
-text for a similarly scoped variant.
+## 2. A bounded 2-character-edit sweep on the whole chapter under the two confirmed separators
 
-## 4. Identify what "76" indexes for Block 76
+The original single-character-edit sweep (266,038,400 candidates) was
+UTF-8-only and used an unconfirmed separator assumption. **Fully redone
+2026-08-22 with the confirmed separators, completing the edit-distance-1
+family:**
+
+- 1-character deletion: 182,888 candidates (every position, both
+  separators, both addresses). 0 match.
+- 1-character insertion: 1,097,352 candidates (space, NBSP, zero-width
+  space, tab, CR, LF at every position, parallelized across 11 cores). 0
+  match.
+- 1-character substitution: 17,560,552 candidates (every position replaced
+  with every printable ASCII character plus NBSP, 97 characters,
+  parallelized across 7 cores, 9,450s runtime). 0 match.
+
+All three against the whole chapter, unmodified and with the ITASM
+transform, both confirmed separators, both target addresses. **This is a
+genuinely exhaustive edit-distance-1 search under the confirmed formatting
+— not a targeted sample — and it is negative.** A true 2-character sweep
+(edit two positions simultaneously) remains unrun; even bounded to
+NBSP/line-ending-adjacent positions it is estimated at roughly an hour on a
+rented GPU, which was not available in this session (local throughput here:
+~1,850 derivations/sec parallelized across 7 cores, vs. GPU rates on the
+order of hundreds of thousands/sec cited elsewhere in this repository). An
+unbounded 2-character sweep (every pair of positions x every pair of
+characters) is not proposed; its cost is disproportionate without a
+narrower reason to expect the answer lives there, now that edit-distance-1
+has been exhausted.
+
+What would confirm it: a match within a bounded 2-character space.
+What would kill it: exhausting that bounded space with none.
+Cost: a bounded 2-character sweep, on the order of an hour on a rented GPU;
+not attempted locally given the throughput measured here.
+
+## 3. Differential validation against the superseded address
+
+Not yet applicable as an independent lead — it becomes actionable only once a
+candidate transform reproduces either target address. At that point, the
+same transform (or a small evidence-backed variant of it under the `\r\n`
+separator instead of `\r\n\r\n`) should be checked against the superseded
+address `1EFojcAo2vbhRGCGCa7q8Wwvzss28mhQYC` as well. A transform that
+explains both addresses, consistent with the author's own "removed one of the
+twists" description of the difference between them, is far stronger evidence
+than a single-address hit.
+
+What would confirm it: the same transform family reproduces both addresses
+under their respective confirmed separators.
+What would kill it: not applicable until lead 1 produces a candidate to test.
+Cost: minutes, contingent on lead 1.
+
+---
+
+## Historical: Block 76 leads (solved 2026-08-17, no longer pursued)
+
+### Identify what "76" indexes for Block 76
 
 A method confirmed on 3 other blocks in the same series (56, 57, 58) uses the
 block's own number as a position index into a specific corpus (a numbered post
-by Satoshi Nakamoto or Hal Finney on bitcointalk, read in a specific order). The
-same method, tried against every corpus and ordering available (Satoshi's and
-Hal Finney's bitcointalk posts, Hal Finney's tweets), does not produce a post
-containing "change" or "from" at position 76. The corpus this method should
-index for block 76 has not been identified; candidates not yet tried include the
-complete list of Hal Finney's tweets (only 58 were recovered through the
-official API; a fuller archive may exist), Satoshi's SourceForge posts, the
-Bitcoin whitepaper or v0.1 source code read as a sequence of numbered units, and
-the author's own r/Grycoin posts read as their own numbered sequence.
+by Satoshi Nakamoto or Hal Finney on bitcointalk, read in a specific order).
+The same method, tried against every corpus and ordering available, did not
+produce a post containing "change" or "from" at position 76 before the block
+was solved by another reader.
 
-What would confirm it: a position-76 item in the right corpus containing "change
-to" or "from change to", tested through `tools/oracle.py --block76-filter` and
-then a full derivation.
-What would kill it: exhausting the remaining candidate corpora with no match at
-position 76.
-Cost: minutes per corpus once a candidate corpus is assembled.
+### A short, human-reasoned answer to "change to" / "from change to"
 
-## 5. A short, human-reasoned answer to "change to" / "from change to"
-
-The author's own hint structure (a short, freeform-text question plus a short
-TOMI expansion, confirmed on more than a dozen other blocks) argues for a short,
-punchy answer rather than a long dictionary phrase. The scripted sweep in
-`analysis/tested.md` covers dictionary and corpus vocabulary exhaustively within
-its stated bounds, but a human-reasoned short answer with unusual capitalization
-or punctuation (the author's own confirmed style on other blocks, for example
-"NGD" for "net zero" or "JD6" for "QWERTY") is a different kind of hypothesis
-than a word-list sweep can reach.
-
-What would confirm it: any short candidate, tested through
-`tools/oracle.py --block76-filter` first (a near-instant filter) and then
-through a full derivation.
-What would kill it, in the useful sense: nothing kills this lead outright; it
-stays open as a standing invitation, same as any human-reasoned wordplay block
-in the series.
-Cost: minutes per candidate; no sweep implied.
+The author's own hint structure argued for a short, punchy answer rather than
+a long dictionary phrase. Superseded by the block being solved; the solution
+was never disclosed publicly, so this cannot be confirmed retrospectively.

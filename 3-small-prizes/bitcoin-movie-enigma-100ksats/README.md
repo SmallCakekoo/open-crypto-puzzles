@@ -88,15 +88,21 @@ python3 tools/oracle.py "w1 w2 ... w24"
 ```
 
 The oracle validates a 24-word candidate as a BIP39 mnemonic, derives every
-plausible address (BIP84, BIP49 and BIP44 across 2 accounts and 3 indices each,
-plus 3 raw paths), and compares each to the escrow address. `MATCH <address> via
-<path>` on a hit, `NO MATCH` otherwise. To check which 10 of 34 known words to
-drop, generate the 24-word reductions yourself and pipe them through `--stdin`;
-the puzzle's own arithmetic bounds this to C(34,10) = 131,128,140 raw combinations,
-cut by the BIP39 checksum (1 in 256) to about 512,000 candidates, which costs on
-the order of an hour end to end with this pure-Python, bip_utils-only oracle. That
-bound only applies once all 34 words and their order are known, which is not yet
-the case here.
+plausible address (BIP84, BIP49 and BIP44 across 5 accounts and 10 indices each,
+both external and internal/change chains, plus 3 raw paths -- widened 2026-08-24
+from the original 2 accounts x 3 indices, external chain only, after an extended
+negative result across every other tested hypothesis made the narrower path
+coverage itself worth ruling out), and compares each to the escrow address.
+`MATCH <address> via <path>` on a hit, `NO MATCH` otherwise. To check which 10 of
+34 known words to drop, generate the 24-word reductions yourself and pipe them
+through `--stdin`; the puzzle's own arithmetic bounds this to C(34,10) =
+131,128,140 raw combinations, cut by the BIP39 checksum (1 in 256) to about
+512,000 candidates. Only the checksum-valid fraction pays the full address-derivation
+cost, so overall throughput on a full sweep is close to (not 14x worse than) the
+narrower version -- roughly 1.5x slower single-threaded (~7,900/s vs ~12,000/s on
+a realistic mixed sample), since checksum-invalid candidates (the vast majority)
+are rejected before any address is derived either way. That bound only applies
+once all 34 words and their order are known, which is not yet the case here.
 
 ### Certified against
 

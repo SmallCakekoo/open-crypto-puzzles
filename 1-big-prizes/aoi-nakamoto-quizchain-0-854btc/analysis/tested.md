@@ -42,13 +42,73 @@ planted 3 synthetic witnesses per base text (head, middle, tail) and recovered
 all of them on all 40 bases, plus recovered the real Stage One text and address
 when run as a 41st base. Dates: all rows 2026-08-15.
 
-Cumulative for Real Big Block: approximately 272 million candidates tested, 0
-match. The single-character-edit sweep accounts for the large majority of this
-total and is the only row certified as a complete sweep of its stated space (all
-40 bases, every single edit); every other row is a targeted, not exhaustive,
-test of one specific hypothesis about which paragraphs were modified.
+Cumulative for the original private research: approximately 272 million
+candidates tested, 0 match. The single-character-edit sweep accounts for the
+large majority of this total and is the only row certified as a complete sweep
+of its stated space (all 40 bases, every single edit) — **under UTF-8 only**;
+this should not be read as an unconditional exhaustive search, since the two
+paragraph separators actually used by the author (`\r\n` and `\r\n\r\n`,
+confirmed 2026-08-22, see below) were not known or tested at the time it ran,
+and were different from the `\n\n`/`\n` assumptions the private research used.
+Every other row is a targeted, not exhaustive, test of one specific hypothesis
+about which paragraphs were modified.
 
-## Quizchain2 Block 76 (0.077 BTC)
+### 2026-08-22 session: real fetched source, confirmed separators, encoding-aware
+
+Conducted after recovering the exact separator specification directly from the
+author (Real Big Block Discussion thread, fully recovered via the Arctic Shift
+Reddit archive — see `data/realbigblock_full_thread_recovered.md`) and after
+fetching the actual 273-paragraph chapter text via the Wattpad API (not
+previously done against real data in earlier ledger rows; the 2019
+private-research base texts are not available in this repository). All rows
+below tested against **both** target addresses
+(`14zMkTgaVXJcxdh4JdWi29MLRR44iUSG9W` current, `1EFojcAo2vbhRGCGCa7q8Wwvzss28mhQYC`
+superseded), each with its own confirmed separator (`\r\n\r\n` current, `\r\n`
+superseded), all 6 BIP44 indices, using `oracle.py`'s certified transform.
+
+| Hypothesis family | Candidates | Result |
+|---|---|---|
+| Whole chapter and 12 precisely-bounded chapter sections, 3 case-rule variants (unmodified, ITASM-literal-first-char, ITASM-first-alphabetic-char), separator variants (`\r\n`, `\r\n\r\n`, `\n`, `\n\n`), 3 NBSP-handling modes, UTF-8/ISO-8859-1 | 1,437 | 0 match |
+| ITASM-only and non-ITASM-only selection (drop-not-flip: keep only matching paragraphs, discard the rest, preserve order), with and without also applying the case-flip to the kept paragraphs | 96 | 0 match |
+| Individual single-sign selectors (I-only, T-only, A-only, S-only, M-only paragraphs), paragraphs containing "sign"/"signs", selection restricted to the "Satoshi Code" section (ITASM-initial and non-ITASM-initial subsets within it) | 192 | 0 match |
+| Header/title-paragraph inclusion vs. exclusion x per-paragraph/whole-document trim x transform x both separators x both encodings (byte-level forensic-audit follow-up) | 192 + 192 | 0 match |
+| Reversed case-flip direction (ITASM-initial paragraphs flipped, non-ITASM unchanged) against the real Stage One calibration text | 1 | 0 match (confirms the original, already-certified direction is the correct one — resolves an apparent contradiction with Grycoin Block 2's imprecise worked example) |
+| First-letter and last-letter streams of the whole chapter, and restricted to ITASM-only / non-ITASM-only characters, visually inspected for readable structure | 4 streams | no recognizable word or phrase found |
+| Stage One calibration under UTF-8, ISO-8859-1, and cp1252 (the real bitcointalk post text, fetched fresh and reconstructed per GitHub issue #1's `<br><br>` rule) | 3 | all 3 reproduce the calibration address identically — the source is pure ASCII, so this confirms the pipeline but cannot discriminate encodings |
+| ITASM uniqueness: all 512 subsets (sizes 0-9) of the 9 distinct letters in "SATOSHI NAKAMOTO", against the real Stage One text | 512 | 16 subsets reproduce the address; all are supersets of the minimal 5-letter set `{A,I,M,S,T}` plus any combination of the 4 letters that never appear as a first letter in the Finney post (`O,H,N,K`) — confirms ITASM is the unique minimal representative, not a coincidence, and is independently corroborated by the chapter's own explicit statement of it |
+
+### 2026-08-22 session, continued: full book read, positional selection, edit-distance sweeps with confirmed separators
+
+Read all 33 parts of the "Second" Wattpad story in full (previously only 4
+had been read). No part states a Real Big Block selection or transformation
+rule. One reusable technique found: "Quizchain as a Password Manager" (part
+18) demonstrates the author's own "every 7th word, first letter" extraction
+method; translated to paragraph granularity and tested as a positional
+selector, also negative (see below).
+
+| Hypothesis family | Candidates | Result |
+|---|---|---|
+| Positional paragraph selection: every Nth paragraph (N = 2, 3, 4, 7) at every possible offset, kept and joined in order, with and without the case-flip transform, both confirmed separators, 3 NBSP modes, 2 encodings, both addresses | 384 | 0 match |
+| Full 1-character-deletion sweep: every position of the whole chapter deleted, one at a time, both confirmed separators, unmodified and ITASM variants, both addresses (UTF-8) — the first exhaustive edit-distance-1 sweep run against the confirmed separator bytes; the original 266M sweep used unconfirmed `\n`/`\n\n` | 182,888 | 0 match |
+| Full 1-character-insertion sweep: 6 candidate characters (space, NBSP, zero-width space, tab, CR, LF) inserted at every position of the whole chapter, same base/separator/address matrix, parallelized across 11 cores | 1,097,352 | 0 match |
+| Full 1-character-substitution sweep: every position of the whole chapter replaced with every printable ASCII character plus NBSP (97 characters), same base/separator/address matrix, parallelized across 7 cores, 9,450s (2.6h) runtime | 17,560,552 | 0 match |
+
+This completes the edit-distance-1 family (deletion, insertion, and
+substitution, each independently exhaustive) against the whole chapter under
+both confirmed separators and both the unmodified and ITASM-transformed
+bases, on both target addresses. Cumulative for the 2026-08-22 session:
+approximately 18.8 million candidates from the edit-distance sweeps, plus
+roughly 2,100 from the earlier selection/boundary/encoding testing the same
+day, all real fetched data, all negative on both addresses.
+
+Total across both research phases: approximately 291 million candidates
+against Real Big Block, all negative.
+
+## Quizchain2 Block 76 (0.077 BTC) — solved and swept by a reader 2026-08-17
+
+Kept for historical reference; no longer part of the live prize. The solution
+was never disclosed publicly by the solver or by AoiNakamoto, so the negative
+results below cannot be retrospectively explained.
 
 The chain a community player found in 2019 (`solution = "format"`,
 `TOMI = "before TOMI"`) satisfies both of the author's published MD5-prefix
