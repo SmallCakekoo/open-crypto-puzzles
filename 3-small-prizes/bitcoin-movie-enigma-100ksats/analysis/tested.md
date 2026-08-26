@@ -1624,3 +1624,26 @@ Re-running the Connections-hypothesis literal+reference space (286,654,464
 candidates, previously 0 matches under the narrower oracle -- see "Literal +
 one sourced reference word per panel... 2026-08-21") against the widened
 oracle, 10 workers. In progress; result to follow. Date: 2026-08-24.
+
+## Connections literal+reference space re-run against the widened oracle: 0 matches, 2026-08-24
+
+Completion of the run started in the previous entry. 286,654,464 candidates,
+10 workers, ~47,150/s sustained (vs ~68,500/s under the narrower 21-address
+oracle -- consistent with the measured ~1.5x single-thread slowdown from
+widening derivation coverage). `--selftest` passed.
+
+**Result: NO MATCH across all 286,654,464 combinations**, 6062.6s (~1.68h).
+
+This is the first hypothesis+word-table combination tested against every one
+of 5 accounts x 10 indices x (external + internal chain) for BIP84/49/44,
+plus the 3 raw paths -- 303 addresses per candidate instead of 21. Combined
+with the word-table audit (previous entry), two long-standing unexamined
+assumptions are now both cleared for this specific candidate space: the
+34-word table has no transcription errors, and the derivation path/account/
+index search was too narrow. Neither explains the negative result here.
+
+Not yet re-run against the widened oracle: the other two literal+reference
+spaces (single-writer-credit, 1,289,945,088; country+language,
+2,149,908,480) and the original narrower Connections keyword-only space
+(1,828,915,200). All were only tested under the old 21-address oracle.
+Date: 2026-08-24.
