@@ -184,11 +184,17 @@ not attempted).
 
 | Hypothesis family | Candidates | Result |
 |---|---|---|
-| Internal 1-and-2-letter case toggles restricted to signs+U1+U2+U3+U4 zones (4,635 ASCII-alpha positions), both corpus conventions, both separators/addresses, parallelized 7 cores | 42,975,720 | in progress, started 2026-08-22, ~6h estimated |
+| Internal 1-and-2-letter case toggles restricted to signs+U1+U2+U3+U4 zones (4,635 ASCII-alpha positions), both corpus conventions, both separators/addresses, parallelized 7 cores, 22,353s (6.21h) runtime | 42,975,720 | 0 match |
 
-Total across all research phases: approximately 310 million candidates
-against Real Big Block confirmed negative, plus this zoned internal sweep in
-progress.
+This closes the zoned-internal-toggle model for these specific evidence-backed
+paragraph groups: under the canonical corpus (either `<br>` convention) and
+confirmed separators, the answer is not reachable by toggling 1 or 2 ASCII
+letters anywhere within the three IFFWW-initial structural groups, the quoted
+Finney paragraphs, or the "recognize the signs" paragraphs, while leaving the
+rest of the chapter untouched.
+
+Total across all research phases: approximately 353 million candidates
+against Real Big Block, all negative.
 
 ### 2026-08-25 session: contiguous-range and transposition sweeps (tools/sweep.py)
 
