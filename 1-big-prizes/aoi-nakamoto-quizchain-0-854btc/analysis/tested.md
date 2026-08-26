@@ -101,8 +101,94 @@ approximately 18.8 million candidates from the edit-distance sweeps, plus
 roughly 2,100 from the earlier selection/boundary/encoding testing the same
 day, all real fetched data, all negative on both addresses.
 
-Total across both research phases: approximately 291 million candidates
-against Real Big Block, all negative.
+### 2026-08-22, continued: br-stripped internal-`<br>` corpus variant
+
+An independent third party (via the user) reported a corpus reconstruction
+with a different byte length (45,990 vs. this repository's 46,000) for the
+same 273 paragraphs under `\r\n\r\n`. Verified directly: the difference is
+exactly the 10 internal `<br>` tags (mid-paragraph line breaks, not paragraph
+boundaries) — this repository's `load_paragraphs()` converts them to `\n`
+(1 byte each); the third party's pipeline strips them to nothing (0 bytes).
+With that one change, this repository independently reproduces their exact
+claimed byte count (45,990) and MD5 (`f74e8e0122e114fe13c89a3bba25294a`) for
+the unmodified whole chapter. Their 13 trailing-space paragraph indices were
+also independently reproduced exactly by this repository's own byte audit
+before this cross-check, confirming their corpus derives from genuine,
+correctly-extracted source data, not a fabrication. This is a real,
+previously untested base-text variant, distinct from every candidate in the
+rows above.
+
+| Hypothesis family | Candidates | Result |
+|---|---|---|
+| br-stripped variant: whole chapter unmodified and ITASM, both separators, 3 NBSP modes, 2 encodings, both addresses | 24 | 0 match |
+| br-stripped variant: full 1-character-deletion and 1-character-insertion sweep, both separators, both bases, both addresses, parallelized 7 cores | 1,279,960 | 0 match |
+| br-stripped variant: full 1-character-substitution sweep, 97 characters, both separators, both bases, both addresses, parallelized 7 cores, 8,209s runtime | 17,556,672 | 0 match |
+
+This completes the edit-distance-1 family under **both** corpus conventions
+now identified (internal `<br>` as `\n`, and internal `<br>` stripped to
+nothing) — 18,836,632 candidates for the br-stripped variant alone, all
+negative on both addresses.
+
+Note: a third-party claim of having independently reproduced Grycoin Block
+2's solution oracle (author-published MD5 prefix `3c6`) was checked directly
+against the real Block 2 post text (exact substring the author specifies,
+"I thought..." through "...thinking only method.", 10 paragraphs, initials
+`IAFFIOWWIA`). This repository independently reproduced the separate,
+already-known RAW oracle (`7759227d7406d8230d7e3a8f7b9846d7`, unmodified
+text + `\n\n`) exactly, corroborating that the third party's methodology is
+sound for that fact. However, none of the natural extensions tested here —
+unmodified, ITASM-original-direction, ITASM-reversed-direction, each under
+`\r\n\r\n`/`\n\n`/`\r\n` (9 combinations) — reproduce the `3c6` prefix. The
+third party's specific `3c6`-producing candidate has not been shared or
+independently verified; treat that particular claim as unconfirmed pending
+the exact text/transformation they used.
+
+### 2026-08-22, continued: reverse paragraph order (Block 10 "twist" precedent)
+
+The author's only other calibrated meaning of "twist" (Block 10: "not taking
+the obvious choice... but the third word from the end of the list") was
+tested as a full-document reordering: all 273 paragraphs in reverse order,
+both corpus conventions (`<br>` as `\n` and `<br>` stripped), unmodified and
+ITASM-transformed (both applying the case-flip before and after reversal,
+since order could plausibly affect which paragraphs count as "first"/"last"
+for the transform), both confirmed separators, 3 NBSP modes, 2 encodings,
+both addresses.
+
+| Hypothesis family | Candidates | Result |
+|---|---|---|
+| Full-document reverse paragraph order, both corpus conventions, with/without ITASM | 72 | 0 match |
+
+### 2026-08-22, continued: zoned internal 1/2-character case-toggle sweep
+
+A third party's independent investigation (via the user) reported the same
+repeated structural pattern this repository's original README already noted
+("the same paragraph-initial pattern 3 times... plus a quotation from the
+Finney post") but with specific paragraph ranges. Independently verified
+against the real fetched chapter: three 5-paragraph groups, each opening a
+major section (paragraphs 3-7 "Second Coming", 91-95 "Purpose of Grycoin",
+166-170 "My Identity"), each with first-letter sequence I-F-F-W-W — the exact
+Stage One exception pattern — plus the literal quoted Finney paragraphs
+(230-234) and all 12 paragraphs containing the exact phrase "recognize the
+signs" (verified: 13 occurrences, 12 distinct paragraphs, matching the third
+party's claim exactly).
+
+Rather than testing these paragraphs as a *selection* (already done, see
+above, 0 match) or as *boundary* toggles only (already done, boundary2-style,
+0 match on the whole document), this sweep toggles the case of every ASCII
+letter *within* these specific paragraphs (not just first/last letters),
+one and two positions at a time, while leaving the rest of the 273-paragraph
+chapter untouched — a genuinely new dimension, bounded to evidence-backed
+zones rather than the full document (which would be computationally
+infeasible: ~35,825 letters, C(35825,2) ≈ 641M pairs for the whole document,
+not attempted).
+
+| Hypothesis family | Candidates | Result |
+|---|---|---|
+| Internal 1-and-2-letter case toggles restricted to signs+U1+U2+U3+U4 zones (4,635 ASCII-alpha positions), both corpus conventions, both separators/addresses, parallelized 7 cores | 42,975,720 | in progress, started 2026-08-22, ~6h estimated |
+
+Total across all research phases: approximately 310 million candidates
+against Real Big Block confirmed negative, plus this zoned internal sweep in
+progress.
 
 ### 2026-08-25 session: contiguous-range and transposition sweeps (tools/sweep.py)
 

@@ -75,7 +75,7 @@
   },
   "difficulty_left": "external-info",
   "difficulty_note": "The source text (a 273-paragraph Wattpad chapter, part of a 33-part story, all 33 parts now read in full), the case-flip mechanism (confirmed by the chapter's own narrative text, not just by address match), and both historical paragraph-separator byte sequences (\\r\\n superseded, \\r\\n\\r\\n current, both from direct author statements) are all confirmed. What is missing is which paragraphs are actually hashed, and whether the case-flip transform is reused at all for this second stage or was one of the 'twists' the author removed. Approximately 272 million candidates from the original private research plus roughly 18.8 million additional candidates from a now-completed edit-distance-1 sweep (deletion, insertion, substitution, all exhaustive) under the confirmed separators, plus targeted selection/boundary/encoding tests, all negative; approximately 291 million total.",
-  "tested_total": { "candidates": 290842892, "families": 33, "certified": true },
+  "tested_total": { "candidates": 309679564, "families": 35, "certified": true },
   "leads": [
     { "rank": 1, "title": "identify which paragraphs of the Second chapter are hashed, and whether the case-flip transform applies at all", "cost": "open-ended", "status": "open" },
     { "rank": 2, "title": "a bounded 2-character-edit sweep on the whole chapter under the two confirmed separators", "cost": "hours on a rented GPU", "status": "open" },
